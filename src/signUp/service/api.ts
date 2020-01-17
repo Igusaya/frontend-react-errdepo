@@ -43,21 +43,46 @@ export const signUpFactory = (optionConfig?: ApiConfig) => {
     password1: string,
     password2: string
   ) => {
-    const response = await instance.post(
-      'api/v1/rest-auth/registration/',
-      apiParamFactry({
-        username: userName,
-        email: email,
-        password1: password1,
-        password2: password2
-      })
-    );
-    if (response.status !== 201) {
-      throw new Error('Server Error');
+    try {
+      const response = await instance.post(
+        'api/v1/rest-auth/registration/',
+        apiParamFactry({
+          username: userName,
+          email: email,
+          password1: password1,
+          password2: password2
+        })
+      );
+      const key = response.data.key;
+      localStorage.setItem('todolistsbackendkey', key);
+    } catch (error) {
+      if (error.response.status === 400) {
+        let msg = '';
+        for (let k of Object.keys(error.response.data)) {
+          for (let v of error.response.data[k]) {
+            msg += toJp(v);
+          }
+        }
+        throw new Error(msg);
+      }
+      throw new Error(
+        'ただいま混み合っております。時間をおいて再度お試しください。 API status: ' +
+          error.response.status
+      );
     }
-    const key = response.data.key;
-    localStorage.setItem('todolistsbackendkey', key);
-    return key;
   };
   return signUp;
+};
+
+const toJp = (msg: string): string => {
+  switch (msg) {
+    case 'A user with that username already exists.':
+      return 'Nameが他の人とかぶってます\n';
+    case 'A user is already registered with this e-mail address.':
+      return 'Emailが他の人とかぶってます\n';
+    case 'This password is too common.':
+      return 'パスワードはもうちょっとひねってください\n';
+    default:
+      return msg;
+  }
 };

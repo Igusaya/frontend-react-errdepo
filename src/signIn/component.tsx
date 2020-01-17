@@ -36,7 +36,8 @@ const useStyles = makeStyles((theme: Theme) =>
       textTransform: 'none'
     },
     error: {
-      color: 'red'
+      color: 'red',
+      whiteSpace: 'pre-line'
     }
   })
 );

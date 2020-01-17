@@ -1,10 +1,9 @@
 import { Reducer } from 'redux';
-import { AxiosError } from 'axios';
 
 import { ActionType, SignUpElement, SignUpAction } from 'signUp/action';
 
 export type State = SignUpElement & {
-  error?: AxiosError | null;
+  error?: string | null;
   modalOpen: boolean;
 };
 

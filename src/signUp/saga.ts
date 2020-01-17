@@ -16,7 +16,7 @@ function* runSignUp(action: ReturnType<typeof signUp.start>) {
     yield call(api, inputUserName, inputEmail, inputPassword1, inputPassword2);
     yield put(signUp.succeed());
   } catch (error) {
-    yield put(signUp.fail(error));
+    yield put(signUp.fail(error.message));
   }
 }
 

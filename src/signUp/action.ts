@@ -1,5 +1,3 @@
-import { AxiosError } from 'axios';
-
 /* Constants
  ***********************************************/
 export enum ActionType {
@@ -32,7 +30,7 @@ export const signUp = {
     type: ActionType.SIGN_UP_SUCCEED as typeof ActionType.SIGN_UP_SUCCEED
   }),
 
-  fail: (error: AxiosError) => ({
+  fail: (error: string) => ({
     type: ActionType.SIGN_UP_FAIL as typeof ActionType.SIGN_UP_FAIL,
     payload: { error },
     err: true
