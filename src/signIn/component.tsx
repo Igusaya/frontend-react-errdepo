@@ -34,6 +34,9 @@ const useStyles = makeStyles((theme: Theme) =>
     submit: {
       margin: theme.spacing(3, 0, 2),
       textTransform: 'none'
+    },
+    error: {
+      color: 'red'
     }
   })
 );
@@ -47,6 +50,7 @@ export interface SignInFormValue {
 export interface SignInProps {
   signIn: (signInFromValue: SignInFormValue) => void;
   modalOpen: boolean;
+  error?: string;
 }
 
 /* Function component
@@ -144,6 +148,14 @@ const Auth: FC<InjectedFormikProps<SignInProps, SignInFormValue>> = props => {
                 >
                   Sign in
                 </Button>
+
+                {/* error message
+                 ***********************************************/}
+                {props.error ? (
+                  <div className={classes.error}>{props.error}</div>
+                ) : (
+                  ''
+                )}
               </form>
             </CardActions>
           </Card>

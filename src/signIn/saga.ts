@@ -11,7 +11,7 @@ function* runSignUp(action: ReturnType<typeof signIn.start>) {
     yield call(api, inputUserName, inputPassword);
     yield put(signIn.succeed());
   } catch (error) {
-    yield put(signIn.fail(error));
+    yield put(signIn.fail(error.message));
   }
 }
 

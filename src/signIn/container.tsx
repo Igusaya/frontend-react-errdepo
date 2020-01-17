@@ -47,7 +47,8 @@ interface DispatchProps {
 
 const mapStateToProps = (state: State) => {
   return {
-    modalOpen: state.signIn.modalOpen
+    modalOpen: state.signIn.modalOpen,
+    error: state.signIn.error || ''
   };
 };
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {

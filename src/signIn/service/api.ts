@@ -22,15 +22,22 @@ export const signInFactory = (optionConfig?: ApiConfig) => {
   const instance = axios.create(config);
 
   const signIn = async (userName: string, password: string) => {
-    const response = await instance.post('api/v1/rest-auth/login/', {
-      username: userName,
-      password: password
-    });
-    if (response.status !== 200) {
-      throw new Error('Server Error');
+    try {
+      const response = await instance.post('api/v1/rest-auth/login/', {
+        username: userName,
+        password: password
+      });
+      const key = response.data.key;
+      localStorage.setItem('todolistsbackendkey', key);
+    } catch (error) {
+      if (error.response.status === 400) {
+        throw new Error('資格情報が誤ってます');
+      }
+      throw new Error(
+        'ただいま混み合っております。時間をおいて再度お試しください。 API status: ' +
+          error.response.status
+      );
     }
-    const key = response.data.key;
-    localStorage.setItem('todolistsbackendkey', key);
   };
   return signIn;
 };
