@@ -1,20 +1,17 @@
 import { Reducer } from 'redux';
 
-import { ActionType, SignInElement, SignInAction } from 'signIn/action';
+import { ActionType, UserAction } from 'user/action';
 
-export type State = SignInElement & {
+export interface State {
   error?: string | null;
   modalOpen: boolean;
-};
+}
 
 export const initialState: State = {
-  inputUserName: '',
-  inputPassword: '',
   modalOpen: false
 };
 
-export type Action = SignInAction;
-
+export type Action = UserAction;
 /* Reducer
  ***********************************************/
 const reducer: Reducer<State, Action> = (
@@ -22,18 +19,16 @@ const reducer: Reducer<State, Action> = (
   action: Action
 ): State => {
   switch (action.type) {
-    case ActionType.SIGN_IN_START:
+    case ActionType.SIGN_OUT_START:
       return {
-        ...state,
-        inputUserName: action.payload.inputUserName,
-        inputPassword: action.payload.inputPassword
+        ...state
       };
-    case ActionType.SIGN_IN_SUCCEED:
+    case ActionType.SIGN_OUT_SUCCEED:
       return {
         ...state,
         modalOpen: true
       };
-    case ActionType.SIGN_IN_FAIL:
+    case ActionType.SIGN_OUT_FAIL:
       return {
         ...state,
         error: action.payload.error

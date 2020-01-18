@@ -10,8 +10,17 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import SignIn from 'signIn/container';
 import SignUp from 'signUp/container';
+import User from 'user/container';
 
-const App: React.FC = () => {
+/* Props
+ ***********************************************/
+export interface AppProps {
+  isSignIn: boolean;
+}
+
+/* Function component
+ ***********************************************/
+const App: React.FC<AppProps> = ({ isSignIn = false }) => {
   const useStyles = makeStyles(theme => ({
     appBar: {
       borderBottom: `1px solid ${theme.palette.divider}`
@@ -48,8 +57,14 @@ const App: React.FC = () => {
           >
             Todo Lists
           </Typography>
-          <SignIn />
-          <SignUp />
+          {isSignIn ? (
+            <p>login</p>
+          ) : (
+            <div>
+              <SignIn />
+              <SignUp />
+            </div>
+          )}
         </Toolbar>
       </AppBar>
       {/* body

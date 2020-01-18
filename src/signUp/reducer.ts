@@ -24,8 +24,6 @@ const reducer: Reducer<State, Action> = (
   state: State = initialState,
   action: Action
 ): State => {
-  console.log('AuthReducer state:', state);
-  console.log('AuthReducer action:', action);
   switch (action.type) {
     case ActionType.SIGN_UP_START:
       return {

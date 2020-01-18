@@ -63,6 +63,7 @@ export const signUpFactory = (optionConfig?: ApiConfig) => {
             msg += toJp(v);
           }
         }
+        // TODO: 出来たらオブジェクト型で投げて各項目のエラー出力場所に出力したい
         throw new Error(msg);
       }
       throw new Error(

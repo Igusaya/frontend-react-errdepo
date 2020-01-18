@@ -3,24 +3,32 @@ import { Reducer, combineReducers } from 'redux';
 import signIn, {
   State as SignInState,
   Action as SignInAction,
-  initialState as SignInInitialState
+  initialState as signInInitialState
 } from 'signIn/reducer';
 import signUp, {
   State as SignUpState,
   Action as SignUpAction,
-  initialState as SignUpInitialState
+  initialState as signUpInitialState
 } from 'signUp/reducer';
+import user, {
+  State as UserState,
+  Action as UserAction,
+  initialState as userInitialState
+} from 'user/reducer';
+import { ActionType } from 'user/action';
 
-type Action = SignInAction | SignUpAction;
+type Action = SignInAction | SignUpAction | UserAction;
 
 export interface State {
   signIn: SignInState;
   signUp: SignUpState;
+  user: UserState;
 }
 
 const initialState: State = {
-  signIn: SignInInitialState,
-  signUp: SignUpInitialState
+  signIn: signInInitialState,
+  signUp: signUpInitialState,
+  user: userInitialState
 };
 
 /**
@@ -32,8 +40,23 @@ const crossSliceReducer: Reducer<State, Action> = (
   state: State = initialState,
   action: Action
 ): State => {
-  // TODO: signIn.modalOpenとsignUp.modalOpenをsignOutで初期化する
-  return state;
+  switch (action.type) {
+    case ActionType.SIGN_OUT_SUCCEED:
+      return {
+        ...state,
+        signIn: {
+          ...state.signIn,
+          modalOpen: false
+        },
+        signUp: {
+          ...state.signUp,
+          modalOpen: false
+        }
+        // TODO: user情報取得作成したら、このタイミングで削除する
+      };
+    default:
+      return state;
+  }
 };
 
 const rootReducer: Reducer<State, Action> = (
@@ -42,7 +65,8 @@ const rootReducer: Reducer<State, Action> = (
 ): State => {
   const intermediateReducer = combineReducers<State>({
     signIn,
-    signUp
+    signUp,
+    user
   });
   // combinReducerで取りまとめられたstateを取得
   const intermediateState = intermediateReducer(state, action);
