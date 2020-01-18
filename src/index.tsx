@@ -6,7 +6,7 @@ import { createStore, applyMiddleware } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
-import App from 'app/component';
+import App from 'app/container';
 import reducer from 'reducer';
 import rootSaga from 'saga';
 
@@ -18,7 +18,7 @@ const enhancer =
 const store = createStore(reducer, enhancer);
 ReactDOM.render(
   <Provider store={store}>
-    <App isSignIn={true} />
+    <App />
   </Provider>,
   document.getElementById('root')
 );

@@ -11,7 +11,7 @@ interface DispatchProps {
 
 const mapStateToProps = (state: State) => {
   return {
-    //error: state.user.error
+    error: state.user.error
   };
 };
 

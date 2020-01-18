@@ -31,7 +31,8 @@ const reducer: Reducer<State, Action> = (
     case ActionType.SIGN_IN_SUCCEED:
       return {
         ...state,
-        modalOpen: true
+        modalOpen: true,
+        error: null
       };
     case ActionType.SIGN_IN_FAIL:
       return {

@@ -54,8 +54,7 @@ export interface UserProps {
 
 /* Function component
  ***********************************************/
-//const User: FC<UserProps> = ({ signOut }) => {
-const User: FC = () => {
+const User: FC<UserProps> = ({ signOut }) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -64,8 +63,7 @@ const User: FC = () => {
     setAnchorEl(null);
   };
   const handleSignOutClick = () => {
-    console.log('teste');
-    // signOut();
+    signOut();
   };
   return (
     <>

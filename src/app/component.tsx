@@ -58,7 +58,7 @@ const App: React.FC<AppProps> = ({ isSignIn = false }) => {
             Todo Lists
           </Typography>
           {isSignIn ? (
-            <p>login</p>
+            <User />
           ) : (
             <div>
               <SignIn />
@@ -69,7 +69,9 @@ const App: React.FC<AppProps> = ({ isSignIn = false }) => {
       </AppBar>
       {/* body
        ***********************************************/}
-      <Container>{localStorage.getItem('todolistsbackendkey')}</Container>
+      <Container>
+        <p>test</p>
+      </Container>
     </>
   );
 };

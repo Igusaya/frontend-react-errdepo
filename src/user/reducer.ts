@@ -12,6 +12,7 @@ export const initialState: State = {
 };
 
 export type Action = UserAction;
+
 /* Reducer
  ***********************************************/
 const reducer: Reducer<State, Action> = (
