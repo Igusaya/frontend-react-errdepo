@@ -1,7 +1,7 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 
 import { user, ActionType } from 'user/action';
-import { signOutFactory } from 'user/service/signOutApi';
+import { signOutFactory } from 'service/backend-django-rest-todolists/api';
 
 function* runSignOut(action: ReturnType<typeof user.start>) {
   try {

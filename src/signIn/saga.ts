@@ -1,7 +1,7 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 
 import { signIn, ActionType } from 'signIn/action';
-import { signInFactory } from 'signIn/service/api';
+import { signInFactory } from 'service/backend-django-rest-todolists/api';
 
 function* runSignUp(action: ReturnType<typeof signIn.start>) {
   const { inputUserName, inputPassword } = action.payload;
