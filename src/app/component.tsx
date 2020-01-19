@@ -11,16 +11,18 @@ import { makeStyles } from '@material-ui/core/styles';
 import SignIn from 'signIn/container';
 import SignUp from 'signUp/container';
 import User from 'user/container';
+import { Profile } from 'service/backend-django-rest-todolists/model';
 
 /* Props
  ***********************************************/
 export interface AppProps {
   isSignIn: boolean;
+  profile?: Profile;
 }
 
 /* Function component
  ***********************************************/
-const App: React.FC<AppProps> = ({ isSignIn = false }) => {
+const App: React.FC<AppProps> = ({ isSignIn = false, profile }) => {
   const useStyles = makeStyles(theme => ({
     appBar: {
       borderBottom: `1px solid ${theme.palette.divider}`
@@ -58,7 +60,9 @@ const App: React.FC<AppProps> = ({ isSignIn = false }) => {
             Todo Lists
           </Typography>
           {isSignIn ? (
-            <User />
+            <div>
+              <User />
+            </div>
           ) : (
             <div>
               <SignIn />

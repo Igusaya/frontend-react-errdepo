@@ -1,11 +1,12 @@
 import { connect } from 'react-redux';
 
 import { State } from 'reducer';
-import App from 'app/component';
+import App, { AppProps } from 'app/component';
 
-const mapStateToProps = (state: State) => {
+const mapStateToProps = (state: State): AppProps => {
   return {
-    isSignIn: localStorage.getItem('todolistsbackendkey') ? true : false
+    isSignIn: localStorage.getItem('todolistsbackendkey') ? true : false,
+    profile: state.user.profile
   };
 };
 

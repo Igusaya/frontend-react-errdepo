@@ -7,8 +7,8 @@ function* runSignUp(action: ReturnType<typeof signIn.start>) {
   const { inputUserName, inputPassword } = action.payload;
 
   try {
-    const api = signInFactory();
-    yield call(api, inputUserName, inputPassword);
+    const signInApi = signInFactory();
+    yield call(signInApi, inputUserName, inputPassword);
     yield put(signIn.succeed());
   } catch (error) {
     yield put(signIn.fail(error.message));

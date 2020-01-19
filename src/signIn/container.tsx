@@ -18,8 +18,6 @@ const Formik = withFormik<SignInProps, SignInFormValue>({
   },
   // submit押下時の挙動
   handleSubmit: (payload, { props, setSubmitting }) => {
-    console.log('AuthContainer Formik payload:', payload);
-    console.log('AuthContainer Formik props:', props);
     props.signIn({
       inputUserName: payload.inputUserName,
       inputPassword: payload.inputPassword

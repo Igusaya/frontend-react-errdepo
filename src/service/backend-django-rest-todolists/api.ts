@@ -139,7 +139,7 @@ export const signOutFactory = (optionConfig?: ApiConfig) => {
  * Get {baseURL}/profile/
  * @param optionConfig
  ***********************************************/
-export const getProfile = (optionConfig?: ApiConfig) => {
+export const getProfileFactory = (optionConfig?: ApiConfig) => {
   const token = localStorage.getItem('todolistsbackendkey');
   const config = {
     ...DEFAULT_API_CONFIG,
@@ -150,11 +150,11 @@ export const getProfile = (optionConfig?: ApiConfig) => {
   };
   const instance = axios.create(config);
 
-  const signIn = async () => {
+  const getProfile = async () => {
     try {
       const response = await instance.get('profile/', {});
-      const profile: Profile = response.data;
-      return profile;
+      const profile: Profile = response.data[0];
+      return { profile };
     } catch (error) {
       throw new Error(
         'ただいま混み合っております。時間をおいて再度お試しください。 API status: ' +
@@ -162,5 +162,5 @@ export const getProfile = (optionConfig?: ApiConfig) => {
       );
     }
   };
-  return signIn;
+  return getProfile;
 };

@@ -1,10 +1,12 @@
 import { Reducer } from 'redux';
 
 import { ActionType, UserAction } from 'user/action';
+import { Profile } from 'service/backend-django-rest-todolists/model';
 
 export interface State {
   error?: string | null;
   modalOpen: boolean;
+  profile?: Profile;
 }
 
 export const initialState: State = {
@@ -27,12 +29,26 @@ const reducer: Reducer<State, Action> = (
     case ActionType.SIGN_OUT_SUCCEED:
       return {
         ...state,
-        modalOpen: true
+        modalOpen: true,
+        profile: undefined
       };
     case ActionType.SIGN_OUT_FAIL:
       return {
         ...state,
         error: action.payload.error
+      };
+    case ActionType.GET_PROFILE_START:
+      return {
+        ...state
+      };
+    case ActionType.GET_PROFILE_SUCCEED:
+      return {
+        ...state,
+        profile: action.payload.result.profile
+      };
+    case ActionType.GET_PROFILE_FAIL:
+      return {
+        ...state
       };
     default: {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -16,6 +16,8 @@ const enhancer =
     ? composeWithDevTools(applyMiddleware(sagaMiddleWare))
     : applyMiddleware(sagaMiddleWare);
 const store = createStore(reducer, enhancer);
+sagaMiddleWare.run(rootSaga);
+
 ReactDOM.render(
   <Provider store={store}>
     <App />
@@ -23,5 +25,4 @@ ReactDOM.render(
   document.getElementById('root')
 );
 
-sagaMiddleWare.run(rootSaga);
 serviceWorker.unregister();

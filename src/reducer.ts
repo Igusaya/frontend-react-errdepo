@@ -15,7 +15,7 @@ import user, {
   Action as UserAction,
   initialState as userInitialState
 } from 'user/reducer';
-import { ActionType } from 'user/action';
+import { ActionType as UserActionType } from 'user/action';
 
 type Action = SignInAction | SignUpAction | UserAction;
 
@@ -32,7 +32,7 @@ const initialState: State = {
 };
 
 /**
- * 子要素のstate間で値の受け渡しを行いたい場合はここで行う
+ * 子要素のstate間で値の受け渡しを行う
  * @param state
  * @param action
  */
@@ -41,7 +41,7 @@ const crossSliceReducer: Reducer<State, Action> = (
   action: Action
 ): State => {
   switch (action.type) {
-    case ActionType.SIGN_OUT_SUCCEED:
+    case UserActionType.SIGN_OUT_SUCCEED:
       return {
         ...state,
         signIn: {
@@ -52,7 +52,6 @@ const crossSliceReducer: Reducer<State, Action> = (
           ...state.signUp,
           modalOpen: false
         }
-        // TODO: user情報取得作成したら、このタイミングで削除する
       };
     default:
       return state;

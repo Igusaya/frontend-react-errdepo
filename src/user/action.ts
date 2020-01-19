@@ -1,19 +1,26 @@
+import { Profile } from 'service/backend-django-rest-todolists/model';
+
 /* Constants
  ***********************************************/
 export enum ActionType {
   SIGN_OUT_START = 'SIGN_OUT_START',
   SIGN_OUT_SUCCEED = 'SIGN_OUT_SUCCEED',
-  SIGN_OUT_FAIL = 'SIGN_OUT_FAIL'
+  SIGN_OUT_FAIL = 'SIGN_OUT_FAIL',
+  GET_PROFILE_START = 'GET_PROFILE_START',
+  GET_PROFILE_SUCCEED = 'GET_PROFILE_SUCCEED',
+  GET_PROFILE_FAIL = 'GET_PROFILE_FAIL'
 }
 /* Interface
  ***********************************************/
 interface SignOutParams {}
-interface SignOutResult {}
-export type UserElement = SignOutParams & SignOutResult;
+interface GetProfileResult {
+  profile: Profile;
+}
+export type UserElement = SignOutParams;
 
 /* Action
  ***********************************************/
-export const user = {
+export const signOut = {
   start: () => ({
     type: ActionType.SIGN_OUT_START as typeof ActionType.SIGN_OUT_START
   }),
@@ -29,7 +36,27 @@ export const user = {
   })
 };
 
+export const getProfile = {
+  start: () => ({
+    type: ActionType.GET_PROFILE_START as typeof ActionType.GET_PROFILE_START
+  }),
+
+  succeed: (result: GetProfileResult) => ({
+    type: ActionType.GET_PROFILE_SUCCEED as typeof ActionType.GET_PROFILE_SUCCEED,
+    payload: { result }
+  }),
+
+  fail: (error: string) => ({
+    type: ActionType.GET_PROFILE_FAIL as typeof ActionType.GET_PROFILE_FAIL,
+    payload: { error },
+    err: true
+  })
+};
+
 export type UserAction =
-  | ReturnType<typeof user.start>
-  | ReturnType<typeof user.succeed>
-  | ReturnType<typeof user.fail>;
+  | ReturnType<typeof signOut.start>
+  | ReturnType<typeof signOut.succeed>
+  | ReturnType<typeof signOut.fail>
+  | ReturnType<typeof getProfile.start>
+  | ReturnType<typeof getProfile.succeed>
+  | ReturnType<typeof getProfile.fail>;
