@@ -51,6 +51,9 @@ const crossSliceReducer: Reducer<State, Action> = (
         signUp: {
           ...state.signUp,
           modalOpen: false
+        },
+        user: {
+          ...state.user
         }
       };
     default:

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Profile } from './model';
+import { Profile, PutProfile } from './model';
 
 import {
   signUpMessageToJp,
@@ -163,4 +163,32 @@ export const getProfileFactory = (optionConfig?: ApiConfig) => {
     }
   };
   return getProfile;
+};
+
+export const putProfileFactory = (optionConfig?: ApiConfig) => {
+  const token = localStorage.getItem('todolistsbackendkey');
+  const config = {
+    ...DEFAULT_API_CONFIG,
+    ...optionConfig,
+    headers: {
+      Authorization: 'Token ' + token
+    }
+  };
+  const instance = axios.create(config);
+
+  const putProfile = async (param: PutProfile) => {
+    try {
+      const response = await instance.put('profile/', {
+        ...param
+      });
+      const profile: Profile = response.data[0];
+      return { profile };
+    } catch (error) {
+      throw new Error(
+        'ただいま混み合っております。時間をおいて再度お試しください。 API status: ' +
+          error.response.status
+      );
+    }
+  };
+  return putProfile;
 };

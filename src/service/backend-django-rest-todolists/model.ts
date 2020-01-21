@@ -8,3 +8,9 @@ export interface Profile {
   description: string;
   modify: string;
 }
+
+export interface PutProfile {
+  id: number;
+  image: string;
+  description: string;
+}

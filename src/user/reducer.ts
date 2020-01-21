@@ -5,13 +5,10 @@ import { Profile } from 'service/backend-django-rest-todolists/model';
 
 export interface State {
   error?: string | null;
-  modalOpen: boolean;
   profile?: Profile;
 }
 
-export const initialState: State = {
-  modalOpen: false
-};
+export const initialState: State = {};
 
 export type Action = UserAction;
 
@@ -29,7 +26,6 @@ const reducer: Reducer<State, Action> = (
     case ActionType.SIGN_OUT_SUCCEED:
       return {
         ...state,
-        modalOpen: true,
         profile: undefined
       };
     case ActionType.SIGN_OUT_FAIL:
@@ -48,7 +44,23 @@ const reducer: Reducer<State, Action> = (
       };
     case ActionType.GET_PROFILE_FAIL:
       return {
-        ...state
+        ...state,
+        error: action.payload.error
+      };
+    case ActionType.PUT_PROFILE_START:
+      return {
+        ...state,
+        profile: action.payload.param.profile
+      };
+    case ActionType.PUT_PROFILE_SUCCEED:
+      return {
+        ...state,
+        profile: action.payload.result.profile
+      };
+    case ActionType.PUT_PROFILE_FAIL:
+      return {
+        ...state,
+        error: action.payload.error
       };
     default: {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -18,8 +18,6 @@ const Formik = withFormik<SignUpProps, SignUpFormValue>({
     };
   },
   handleSubmit: (payload, { props, resetForm, setSubmitting }) => {
-    console.log('AuthContainer Formik payload:', payload);
-    console.log('AuthContainer Formik props:', props);
     props.signUp({
       inputUserName: payload.inputUserName,
       inputEmail: payload.inputEmail,
