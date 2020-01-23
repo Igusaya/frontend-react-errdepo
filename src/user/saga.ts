@@ -8,9 +8,12 @@ import {
 } from 'service/backend-django-rest-todolists/api';
 import { PutProfile } from 'service/backend-django-rest-todolists/model';
 
-function* runSignOut(action: ReturnType<typeof signOut.start>) {
+function* runSignOut(
+  handler: typeof signOutFactory,
+  action: ReturnType<typeof signOut.start>
+) {
   try {
-    const api = signOutFactory();
+    const api = handler();
     yield call(api);
     yield put(signOut.succeed());
   } catch (error) {
@@ -18,9 +21,12 @@ function* runSignOut(action: ReturnType<typeof signOut.start>) {
   }
 }
 
-function* runGetProfile(action: ReturnType<typeof getProfile.start>) {
+function* runGetProfile(
+  handler: typeof getProfileFactory,
+  action: ReturnType<typeof getProfile.start>
+) {
   try {
-    const api = getProfileFactory();
+    const api = handler();
     const profile = yield call(api);
     yield put(getProfile.succeed(profile));
   } catch (error) {
@@ -28,14 +34,17 @@ function* runGetProfile(action: ReturnType<typeof getProfile.start>) {
   }
 }
 
-function* runPutProfile(action: ReturnType<typeof putProfile.start>) {
+function* runPutProfile(
+  handler: typeof putProfileFactory,
+  action: ReturnType<typeof putProfile.start>
+) {
   try {
     const putProfileParam: PutProfile = {
       id: action.payload.param.profile.id,
       description: action.payload.param.profile.description,
       image: action.payload.param.profile.image
     };
-    const api = putProfileFactory();
+    const api = handler();
     const profile = yield call(api, putProfileParam);
     yield put(putProfile.succeed(profile));
   } catch (error) {
@@ -43,14 +52,14 @@ function* runPutProfile(action: ReturnType<typeof putProfile.start>) {
   }
 }
 
-export function* watchSignOut() {
-  yield takeLatest(ActionType.SIGN_OUT_START, runSignOut);
+export function* watchSignOut(handler: typeof signOutFactory) {
+  yield takeLatest(ActionType.SIGN_OUT_START, runSignOut, handler);
 }
 
-export function* watchGetProfile() {
-  yield takeLatest(ActionType.GET_PROFILE_START, runGetProfile);
+export function* watchGetProfile(handler: typeof getProfileFactory) {
+  yield takeLatest(ActionType.GET_PROFILE_START, runGetProfile, handler);
 }
 
-export function* watchPutProfile() {
-  yield takeLatest(ActionType.PUT_PROFILE_START, runPutProfile);
+export function* watchPutProfile(handler: typeof putProfileFactory) {
+  yield takeLatest(ActionType.PUT_PROFILE_START, runPutProfile, handler);
 }

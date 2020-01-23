@@ -65,7 +65,6 @@ export const signUpFactory = (optionConfig?: ApiConfig) => {
     ...DEFAULT_API_CONFIG,
     ...optionConfig
   };
-  console.log('SignUpFactory config:', config);
   const instance = axios.create(config);
 
   const signUp = async (
@@ -121,7 +120,7 @@ export const signOutFactory = (optionConfig?: ApiConfig) => {
   };
   const instance = axios.create(config);
 
-  const signIn = async () => {
+  const signOut = async () => {
     try {
       await instance.post('api/v1/rest-auth/logout/', {});
       localStorage.removeItem('todolistsbackendkey');
@@ -132,7 +131,7 @@ export const signOutFactory = (optionConfig?: ApiConfig) => {
       );
     }
   };
-  return signIn;
+  return signOut;
 };
 
 /**
@@ -165,6 +164,10 @@ export const getProfileFactory = (optionConfig?: ApiConfig) => {
   return getProfile;
 };
 
+/**
+ * Put {baseURL}/profile/
+ * @param optionConfig
+ */
 export const putProfileFactory = (optionConfig?: ApiConfig) => {
   const token = localStorage.getItem('todolistsbackendkey');
   const config = {

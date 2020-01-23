@@ -220,6 +220,7 @@ const User: FC<InjectedFormikProps<UserProps, UserFormValue>> = props => {
       <Button
         onClick={handleClick}
         startIcon={<Avatar alt={props.profile?.username} src={imageURL} />}
+        data-testid="user-button"
       >
         <div>{props.profile?.username}</div>
       </Button>
@@ -239,7 +240,10 @@ const User: FC<InjectedFormikProps<UserProps, UserFormValue>> = props => {
           </ListItemIcon>
           <ListItemText primary="Profile" />
         </StyledMenuItem>
-        <StyledMenuItem onClick={handleSignOutClick}>
+        <StyledMenuItem
+          onClick={handleSignOutClick}
+          data-testid="sign-out-button"
+        >
           <ListItemIcon>
             <ExitToAppIcon fontSize="small" />
           </ListItemIcon>

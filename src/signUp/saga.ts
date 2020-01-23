@@ -3,7 +3,10 @@ import { call, put, takeLatest } from 'redux-saga/effects';
 import { signUp, ActionType } from 'signUp/action';
 import { signUpFactory } from 'service/backend-django-rest-todolists/api';
 
-function* runSignUp(action: ReturnType<typeof signUp.start>) {
+function* runSignUp(
+  handler: typeof signUpFactory,
+  action: ReturnType<typeof signUp.start>
+) {
   const {
     inputUserName,
     inputEmail,
@@ -12,7 +15,7 @@ function* runSignUp(action: ReturnType<typeof signUp.start>) {
   } = action.payload;
 
   try {
-    const api = signUpFactory();
+    const api = handler();
     yield call(api, inputUserName, inputEmail, inputPassword1, inputPassword2);
     yield put(signUp.succeed());
   } catch (error) {
@@ -20,6 +23,6 @@ function* runSignUp(action: ReturnType<typeof signUp.start>) {
   }
 }
 
-export function* watchSignUp() {
-  yield takeLatest(ActionType.SIGN_UP_START, runSignUp);
+export function* watchSignUp(handler: typeof signUpFactory) {
+  yield takeLatest(ActionType.SIGN_UP_START, runSignUp, handler);
 }
