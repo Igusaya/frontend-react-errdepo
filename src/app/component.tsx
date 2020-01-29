@@ -7,6 +7,7 @@ import {
   Typography
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
 import SignIn from 'signIn/container';
 import SignUp from 'signUp/container';
@@ -48,41 +49,52 @@ const App: React.FC<AppProps> = ({ isSignIn = false, profile }) => {
   const classes = useStyles();
   return (
     <>
-      <CssBaseline />
-      {/* header
-       ***********************************************/}
-      <AppBar
-        position="static"
-        color="default"
-        elevation={0}
-        className={classes.appBar}
-      >
-        <Toolbar className={classes.toolbar}>
-          <Typography
-            variant="h6"
-            color="inherit"
-            noWrap
-            className={classes.toolbarTitle}
-          >
-            エラデポ
-          </Typography>
-          {isSignIn ? (
-            <div>
-              <User />
-            </div>
-          ) : (
-            <div>
-              <SignIn />
-              <SignUp />
-            </div>
-          )}
-        </Toolbar>
-      </AppBar>
-      {/* body
-       ***********************************************/}
-      <Container maxWidth="md" component="main" className={classes.heroContent}>
-        <PostReport />
-      </Container>
+      <Router>
+        <CssBaseline />
+        {/* header
+         ***********************************************/}
+        <AppBar
+          position="static"
+          color="default"
+          elevation={0}
+          className={classes.appBar}
+        >
+          <Toolbar className={classes.toolbar}>
+            <Typography
+              variant="h6"
+              color="inherit"
+              noWrap
+              className={classes.toolbarTitle}
+            >
+              <Link to="/">エラデポ</Link>
+            </Typography>
+            {isSignIn ? (
+              <div>
+                <User />
+              </div>
+            ) : (
+              <div>
+                <SignIn />
+                <SignUp />
+              </div>
+            )}
+          </Toolbar>
+        </AppBar>
+        {/* body
+         ***********************************************/}
+        <Container
+          maxWidth="md"
+          component="main"
+          className={classes.heroContent}
+        >
+          <Switch>
+            <Route path="/post_report">
+              <PostReport />
+            </Route>
+            <Route path="/"></Route>
+          </Switch>
+        </Container>
+      </Router>
     </>
   );
 };
