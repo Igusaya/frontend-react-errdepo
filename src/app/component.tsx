@@ -11,7 +11,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import SignIn from 'signIn/container';
 import SignUp from 'signUp/container';
 import User from 'user/container';
-import { Profile } from 'service/backend-django-rest-todolists/model';
+import { Profile } from 'service/backend-django-rest-errdepo/model';
+import PostReport from 'postReport/container';
 
 /* Props
  ***********************************************/
@@ -63,7 +64,7 @@ const App: React.FC<AppProps> = ({ isSignIn = false, profile }) => {
             noWrap
             className={classes.toolbarTitle}
           >
-            Todo Lists
+            エラデポ
           </Typography>
           {isSignIn ? (
             <div>
@@ -79,38 +80,8 @@ const App: React.FC<AppProps> = ({ isSignIn = false, profile }) => {
       </AppBar>
       {/* body
        ***********************************************/}
-      <Container maxWidth="sm" component="main" className={classes.heroContent}>
-        <Typography
-          component="h4"
-          variant="h5"
-          align="center"
-          color="textPrimary"
-          gutterBottom
-        >
-          ご覧いただき、誠にありがとうございます
-        </Typography>
-        <Typography
-          variant="body1"
-          align="center"
-          color="textSecondary"
-          component="p"
-          className={classes.text}
-        >
-          {
-            '当サイトはポートフォリオです。\n保存頂いたデータは予告なく削除する場合がございます。予めご了承ください。'
-          }
-        </Typography>
-        <Typography
-          variant="body1"
-          align="center"
-          color="textSecondary"
-          component="p"
-          className={classes.text}
-        >
-          {
-            '\n動作確認には以下のユーザー情報をご利用ください。\nuser:user\npass:hogefuga'
-          }
-        </Typography>
+      <Container maxWidth="md" component="main" className={classes.heroContent}>
+        <PostReport />
       </Container>
     </>
   );

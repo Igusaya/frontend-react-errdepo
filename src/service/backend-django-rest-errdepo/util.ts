@@ -33,3 +33,8 @@ export const signUpMessageToJp = (msg: string): string => {
       return msg;
   }
 };
+
+export const sharpTo23 = (str: string): string => {
+  const replaceStr = str.replace(/#/g, '%23').replace(/\n/g, '%0D%0A');
+  return replaceStr;
+};

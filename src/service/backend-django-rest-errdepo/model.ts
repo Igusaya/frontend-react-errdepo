@@ -14,3 +14,17 @@ export interface PutProfile {
   image: string;
   description: string;
 }
+
+export interface Report {
+  id: number;
+  created: string;
+  modify: string;
+  lang: string;
+  fw: string;
+  env: string;
+  errmsg: string;
+  description: string;
+  correspondence: string;
+  owner_id: number;
+  owner: string;
+}

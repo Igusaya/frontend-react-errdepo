@@ -25,7 +25,7 @@ import CreateIcon from '@material-ui/icons/Create';
 import { InjectedFormikProps } from 'formik';
 import NavigationIcon from '@material-ui/icons/Navigation';
 
-import { Profile } from 'service/backend-django-rest-todolists/model';
+import { Profile } from 'service/backend-django-rest-errdepo/model';
 import { PutProfileParams } from './action';
 
 /* Styles

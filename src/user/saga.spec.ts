@@ -3,7 +3,6 @@ import { expectSaga } from 'redux-saga-test-plan';
 import { watchSignOut, watchGetProfile, watchPutProfile } from './saga';
 import reducer, { initialState } from './reducer';
 import { signOut, getProfile, putProfile } from './action';
-import { Profile } from 'service/backend-django-rest-todolists/model';
 
 /* Test
  ***********************************************/

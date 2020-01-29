@@ -6,8 +6,12 @@ import {
   signUpFactory,
   signOutFactory,
   putProfileFactory,
-  getProfileFactory
-} from 'service/backend-django-rest-todolists/api';
+  getProfileFactory,
+  getLangFactory,
+  getConfirmFactory,
+  postReportFactory
+} from 'service/backend-django-rest-errdepo/api';
+import { getLang } from 'postReport/action';
 
 /* Local storage set up
  ***********************************************/
@@ -244,6 +248,103 @@ describe('backend-django-rest-errdepo API handlers', () => {
       const putProfile = putProfileFactory();
       try {
         await putProfile(paramProfile);
+      } catch (error) {
+        expect(error.message).toBe(
+          'ただいま混み合っております。時間をおいて再度お試しください。 API status: 500'
+        );
+      }
+    });
+  });
+  /* Get lang test
+   ***********************************************/
+  describe('Getting lang', () => {
+    it('should succeed', async () => {
+      mock
+        .onGet('lang/')
+        .reply(200, { langArray: ['python', 'typescript', 'java'] });
+      const getLang = getLangFactory();
+      const result = await getLang();
+      expect(result).toEqual(['python', 'typescript', 'java']);
+    });
+    it('should fail with 500', async () => {
+      mock.onGet('lang/').reply(500);
+      try {
+        const getLang = getLangFactory();
+        await getLang();
+      } catch (error) {
+        expect(error.message).toBe(
+          'ただいま混み合っております。時間をおいて再度お試しください。 API status: 500'
+        );
+      }
+    });
+  });
+  /* Get Confirm test
+   ***********************************************/
+  describe('Getting report confirm', () => {
+    it('should succeed', async () => {
+      const description = 'testparam1';
+      const correspondence = 'testparam2';
+      mock
+        .onPost(`confirmreport/`)
+        .reply(200, { description: 'test1', correspondence: 'test2' });
+      const getConfirm = getConfirmFactory();
+      const confirm = await getConfirm(description, correspondence);
+      expect(confirm.description).toBe('test1');
+      expect(confirm.correspondence).toBe('test2');
+    });
+    it('should fail with 500', async () => {
+      const description = 'testparam1';
+      const correspondence = 'testparam2';
+      mock.onPost(`confirmreport/`).reply(500);
+      try {
+        const getConfirm = getConfirmFactory();
+        await getConfirm(description, correspondence);
+      } catch (error) {
+        expect(error.message).toBe(
+          'ただいま混み合っております。時間をおいて再度お試しください。 API status: 500'
+        );
+      }
+    });
+  });
+  /* Post Report test
+   ***********************************************/
+  describe('Posting report', () => {
+    it('should succeed', async () => {
+      const lang = 'lang';
+      const fw = 'fw';
+      const env = 'env';
+      const errmsg = 'errmsg';
+      const description = 'testparam1';
+      const correspondence = 'testparam2';
+      mock
+        .onPost('report/', {
+          lang: lang,
+          fw: fw,
+          env: env,
+          errmsg: errmsg,
+          description: description,
+          correspondence: correspondence
+        })
+        .reply(200, { description: 'test1', correspondence: 'test2' });
+      const postReport = postReportFactory();
+      const confirm = await postReport(
+        lang,
+        fw,
+        env,
+        errmsg,
+        description,
+        correspondence
+      );
+      expect(confirm.description).toBe('test1');
+      expect(confirm.correspondence).toBe('test2');
+    });
+    it('should fail with 500', async () => {
+      const description = 'testparam1';
+      const correspondence = 'testparam2';
+      mock.onPost(`confirmreport/`).reply(500);
+      try {
+        const getConfirm = getConfirmFactory();
+        await getConfirm(description, correspondence);
       } catch (error) {
         expect(error.message).toBe(
           'ただいま混み合っております。時間をおいて再度お試しください。 API status: 500'

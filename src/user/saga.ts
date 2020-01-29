@@ -5,8 +5,8 @@ import {
   signOutFactory,
   getProfileFactory,
   putProfileFactory
-} from 'service/backend-django-rest-todolists/api';
-import { PutProfile } from 'service/backend-django-rest-todolists/model';
+} from 'service/backend-django-rest-errdepo/api';
+import { PutProfile } from 'service/backend-django-rest-errdepo/model';
 
 function* runSignOut(
   handler: typeof signOutFactory,

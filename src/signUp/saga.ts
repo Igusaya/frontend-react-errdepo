@@ -1,7 +1,7 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 
 import { signUp, ActionType } from 'signUp/action';
-import { signUpFactory } from 'service/backend-django-rest-todolists/api';
+import { signUpFactory } from 'service/backend-django-rest-errdepo/api';
 
 function* runSignUp(
   handler: typeof signUpFactory,

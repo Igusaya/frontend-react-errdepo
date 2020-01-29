@@ -3,8 +3,9 @@ import MockAdapter from 'axios-mock-adapter';
 
 import {
   signUpMessageToJp,
-  signUpParamFactry
-} from 'service/backend-django-rest-todolists/util';
+  signUpParamFactry,
+  sharpTo23
+} from 'service/backend-django-rest-errdepo/util';
 import { waitForElementToBeRemoved } from '@testing-library/dom';
 
 describe('util methods', () => {
@@ -30,5 +31,9 @@ describe('util methods', () => {
     expect(result).toBe('Emailが他の人とかぶってます\n');
     result = signUpMessageToJp('This password is too common.');
     expect(result).toBe('パスワードはもうちょっとひねってください\n');
+  });
+  it('', () => {
+    const result = sharpTo23('# aaaa \n## bbb');
+    expect(result).toBe('%23 aaaa %0D%0A%23%23 bbb');
   });
 });

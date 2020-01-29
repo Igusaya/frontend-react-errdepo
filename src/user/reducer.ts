@@ -1,7 +1,7 @@
 import { Reducer } from 'redux';
 
 import { ActionType, UserAction } from 'user/action';
-import { Profile } from 'service/backend-django-rest-todolists/model';
+import { Profile } from 'service/backend-django-rest-errdepo/model';
 
 export interface State {
   error?: string | null;

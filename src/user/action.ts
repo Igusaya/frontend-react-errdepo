@@ -1,4 +1,4 @@
-import { Profile } from 'service/backend-django-rest-todolists/model';
+import { Profile } from 'service/backend-django-rest-errdepo/model';
 
 /* Constants
  ***********************************************/

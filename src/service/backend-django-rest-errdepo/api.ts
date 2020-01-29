@@ -1,10 +1,10 @@
 import axios from 'axios';
-import { Profile, PutProfile } from './model';
+import { Profile, PutProfile, Report } from './model';
 
 import {
   signUpMessageToJp,
   signUpParamFactry
-} from 'service/backend-django-rest-todolists/util';
+} from 'service/backend-django-rest-errdepo/util';
 
 /* Interface
  ***********************************************/
@@ -194,4 +194,99 @@ export const putProfileFactory = (optionConfig?: ApiConfig) => {
     }
   };
   return putProfile;
+};
+
+/**
+ * Get {baseURL}/lang/
+ * @param optionConfig
+ */
+export const getLangFactory = (optionConfig?: ApiConfig) => {
+  const config = { ...DEFAULT_API_CONFIG, ...optionConfig };
+  const instance = axios.create(config);
+  const getLang = async () => {
+    try {
+      const response = await instance.get('lang/');
+      return response.data.langArray;
+    } catch (error) {
+      throw new Error(
+        'ただいま混み合っております。時間をおいて再度お試しください。 API status: ' +
+          error.response.status
+      );
+    }
+  };
+  return getLang;
+};
+
+/**
+ * Post {baseURL}/confirmreport/
+ * 本体であればGetだが、XSSバリデにかかるのでPostで実装
+ * @param optionConfig
+ */
+export const getConfirmFactory = (optionConfig?: ApiConfig) => {
+  const config = { ...DEFAULT_API_CONFIG, ...optionConfig };
+  const instance = axios.create(config);
+
+  const getConfirm = async (
+    description: string = '',
+    correspondence: string = '',
+    lang: string = ''
+  ) => {
+    try {
+      const response = await instance.post('confirmreport/', {
+        description: description,
+        correspondence: correspondence,
+        lang: lang
+      });
+      return {
+        description: response.data.description,
+        correspondence: response.data.correspondence
+      };
+    } catch (error) {
+      throw new Error(
+        'ただいま混み合っております。時間をおいて再度お試しください。 API status: ' +
+          error.response.status
+      );
+    }
+  };
+  return getConfirm;
+};
+
+export const postReportFactory = (optionConfig?: ApiConfig) => {
+  const token = localStorage.getItem('todolistsbackendkey');
+  const config = {
+    ...DEFAULT_API_CONFIG,
+    ...optionConfig,
+    headers: {
+      Authorization: 'Token ' + token
+    }
+  };
+  const instance = axios.create(config);
+
+  const postReport = async (
+    lang: string,
+    fw: string = '',
+    env: string = '',
+    errmsg: string,
+    description: string = '',
+    correspondence: string = ''
+  ) => {
+    try {
+      const response = await instance.post('report/', {
+        lang: lang,
+        fw: fw,
+        env: env,
+        errmsg: errmsg,
+        description: description,
+        correspondence: correspondence
+      });
+      const report: Report = response.data;
+      return report;
+    } catch (error) {
+      throw new Error(
+        'ただいま混み合っております。時間をおいて再度お試しください。 API status: ' +
+          error.response.status
+      );
+    }
+  };
+  return postReport;
 };
