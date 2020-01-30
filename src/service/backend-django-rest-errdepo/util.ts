@@ -34,7 +34,14 @@ export const signUpMessageToJp = (msg: string): string => {
   }
 };
 
-export const sharpTo23 = (str: string): string => {
-  const replaceStr = str.replace(/#/g, '%23').replace(/\n/g, '%0D%0A');
-  return replaceStr;
+/**
+ * 2020-01-30T14:07:17.059986+09:00
+ * to
+ * 2020-01-30 14:07:17
+ * @param time
+ */
+export const normalizationTime = (time: string): string => {
+  //2020-01-30T14:07:17.059986+09:00
+  let result = time.replace(/\..+/, '').replace(/T/, ' ');
+  return result;
 };

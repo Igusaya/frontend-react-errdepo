@@ -3,7 +3,8 @@ import { Profile, PutProfile, Report } from './model';
 
 import {
   signUpMessageToJp,
-  signUpParamFactry
+  signUpParamFactry,
+  normalizationTime
 } from 'service/backend-django-rest-errdepo/util';
 
 /* Interface
@@ -152,7 +153,11 @@ export const getProfileFactory = (optionConfig?: ApiConfig) => {
   const getProfile = async () => {
     try {
       const response = await instance.get('profile/', {});
-      const profile: Profile = response.data[0];
+      const result: Profile = response.data[0];
+      const profile = {
+        ...result,
+        modify: normalizationTime(result.modify)
+      };
       return { profile };
     } catch (error) {
       throw new Error(
@@ -184,7 +189,11 @@ export const putProfileFactory = (optionConfig?: ApiConfig) => {
       const response = await instance.put('profile/', {
         ...param
       });
-      const profile: Profile = response.data[0];
+      const result: Profile = response.data[0];
+      const profile = {
+        ...result,
+        modify: normalizationTime(result.modify)
+      };
       return { profile };
     } catch (error) {
       throw new Error(
@@ -251,6 +260,10 @@ export const getConfirmFactory = (optionConfig?: ApiConfig) => {
   return getConfirm;
 };
 
+/**
+ * Post {baseURL}/report/
+ * @param optionConfig
+ */
 export const postReportFactory = (optionConfig?: ApiConfig) => {
   const token = localStorage.getItem('todolistsbackendkey');
   const config = {
@@ -279,7 +292,8 @@ export const postReportFactory = (optionConfig?: ApiConfig) => {
         description: description,
         correspondence: correspondence
       });
-      const report: Report = response.data;
+      const result: Report = response.data;
+      const report = { ...result, modify: normalizationTime(result.modify) };
       return report;
     } catch (error) {
       throw new Error(
@@ -289,4 +303,29 @@ export const postReportFactory = (optionConfig?: ApiConfig) => {
     }
   };
   return postReport;
+};
+
+/**
+ * Get {baseURL}/report/
+ * @param optionConfig
+ */
+export const getReportFactory = (optionConfig?: ApiConfig) => {
+  const config = { ...DEFAULT_API_CONFIG, ...optionConfig };
+  const instance = axios.create(config);
+  const getReport = async () => {
+    try {
+      const response = await instance.get('report/');
+      const results: Report[] = response.data;
+      const reports = results.map((report: Report) => {
+        return { ...report, modify: normalizationTime(report.modify) };
+      });
+      return reports;
+    } catch (error) {
+      throw new Error(
+        'ただいま混み合っております。時間をおいて再度お試しください。 API status: ' +
+          error.response.status
+      );
+    }
+  };
+  return getReport;
 };

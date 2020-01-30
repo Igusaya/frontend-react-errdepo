@@ -45,14 +45,14 @@ interface DispatchProps {
 
 const mapStateToProps = (state: State) => {
   return {
-    langArray: state.report.lang,
-    viewConfirm: state.report.viewConfirm,
-    lang: state.report.report?.lang,
-    fw: state.report.report?.fw,
-    env: state.report.report?.env,
-    errmsg: state.report.report?.errmsg,
-    description: state.report.report?.description,
-    correspondence: state.report.report?.correspondence
+    langArray: state.makeReport.lang,
+    viewConfirm: state.makeReport.viewConfirm,
+    lang: state.makeReport.report?.lang,
+    fw: state.makeReport.report?.fw,
+    env: state.makeReport.report?.env,
+    errmsg: state.makeReport.report?.errmsg,
+    description: state.makeReport.report?.description,
+    correspondence: state.makeReport.report?.correspondence
   };
 };
 

@@ -15,10 +15,14 @@ import user, {
   Action as UserAction,
   initialState as userInitialState
 } from 'user/reducer';
-import report, {
-  State as ReportState,
-  initialState as reportInitialState
+import makeReport, {
+  State as MakeReportState,
+  initialState as makeReportInitialState
 } from 'postReport/reducer';
+import viewReportList, {
+  State as ViewReportListState,
+  initialState as viewReportListInitialState
+} from 'viewReportList/reducer';
 import { ActionType as UserActionType } from 'user/action';
 
 type Action = SignInAction | SignUpAction | UserAction;
@@ -27,14 +31,16 @@ export interface State {
   signIn: SignInState;
   signUp: SignUpState;
   user: UserState;
-  report: ReportState;
+  makeReport: MakeReportState;
+  viewReportList: ViewReportListState;
 }
 
 const initialState: State = {
   signIn: signInInitialState,
   signUp: signUpInitialState,
   user: userInitialState,
-  report: reportInitialState
+  makeReport: makeReportInitialState,
+  viewReportList: viewReportListInitialState
 };
 
 /**
@@ -75,7 +81,8 @@ const rootReducer: Reducer<State, Action> = (
     signIn,
     signUp,
     user,
-    report
+    makeReport,
+    viewReportList
   });
   // combinReducerで取りまとめられたstateを取得
   const intermediateState = intermediateReducer(state, action);

@@ -9,7 +9,8 @@ import {
   getProfileFactory,
   getLangFactory,
   getConfirmFactory,
-  postReportFactory
+  postReportFactory,
+  getReportFactory
 } from 'service/backend-django-rest-errdepo/api';
 import { getLang } from 'postReport/action';
 
@@ -325,7 +326,11 @@ describe('backend-django-rest-errdepo API handlers', () => {
           description: description,
           correspondence: correspondence
         })
-        .reply(200, { description: 'test1', correspondence: 'test2' });
+        .reply(200, {
+          description: 'test1',
+          correspondence: 'test2',
+          modify: '2020-01-29T00:05:31.319351+09:00'
+        });
       const postReport = postReportFactory();
       const confirm = await postReport(
         lang,
@@ -337,6 +342,7 @@ describe('backend-django-rest-errdepo API handlers', () => {
       );
       expect(confirm.description).toBe('test1');
       expect(confirm.correspondence).toBe('test2');
+      expect(confirm.modify).toBe('2020-01-29 00:05:31');
     });
     it('should fail with 500', async () => {
       const description = 'testparam1';
@@ -350,6 +356,23 @@ describe('backend-django-rest-errdepo API handlers', () => {
           'ただいま混み合っております。時間をおいて再度お試しください。 API status: 500'
         );
       }
+    });
+  });
+  /* Get Reports test
+   ***********************************************/
+  describe('Getting reports', () => {
+    it('should succeed', async () => {
+      mock.onGet('report/').reply(200, [
+        { test: 'test', modify: '2020-01-29T00:05:31.319351+09:00' },
+        { test: 'test2', modify: '2020-01-29T00:05:31.319351+09:00' }
+      ]);
+
+      const getReport = getReportFactory();
+      const result = await getReport();
+      expect(result).toEqual([
+        { test: 'test', modify: '2020-01-29 00:05:31' },
+        { test: 'test2', modify: '2020-01-29 00:05:31' }
+      ]);
     });
   });
 });

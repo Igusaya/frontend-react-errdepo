@@ -14,6 +14,7 @@ import SignUp from 'signUp/container';
 import User from 'user/container';
 import { Profile } from 'service/backend-django-rest-errdepo/model';
 import PostReport from 'postReport/container';
+import ViewReportList from 'viewReportList/container';
 
 /* Props
  ***********************************************/
@@ -27,7 +28,13 @@ export interface AppProps {
 const App: React.FC<AppProps> = ({ isSignIn = false, profile }) => {
   const useStyles = makeStyles(theme => ({
     appBar: {
-      borderBottom: `1px solid ${theme.palette.divider}`
+      borderBottom: `1px solid ${theme.palette.divider}`,
+      backgroundColor: '#7EC2C2',
+      '& a': {
+        textDecoration: 'none',
+        color: '#fff',
+        fontSize: '1.8em'
+      }
     },
     toolbar: {
       flexWrap: 'wrap'
@@ -91,7 +98,12 @@ const App: React.FC<AppProps> = ({ isSignIn = false, profile }) => {
             <Route path="/post_report">
               <PostReport />
             </Route>
-            <Route path="/"></Route>
+            <Route path="/report/:reportId">
+              <PostReport />
+            </Route>
+            <Route path="/">
+              <ViewReportList />
+            </Route>
           </Switch>
         </Container>
       </Router>

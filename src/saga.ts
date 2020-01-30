@@ -8,6 +8,7 @@ import {
   watchGetConfirm,
   watchPostReport
 } from 'postReport/saga';
+import { watchGetReports } from 'viewReportList/saga';
 import * as api from 'service/backend-django-rest-errdepo/api';
 
 export default function* rootSaga() {
@@ -19,6 +20,7 @@ export default function* rootSaga() {
     fork(watchPutProfile, api.putProfileFactory),
     fork(watchGetLang, api.getLangFactory),
     fork(watchGetConfirm, api.getConfirmFactory),
-    fork(watchPostReport, api.postReportFactory)
+    fork(watchPostReport, api.postReportFactory),
+    fork(watchGetReports, api.getReportFactory)
   ]);
 }

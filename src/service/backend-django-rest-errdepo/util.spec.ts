@@ -4,7 +4,7 @@ import MockAdapter from 'axios-mock-adapter';
 import {
   signUpMessageToJp,
   signUpParamFactry,
-  sharpTo23
+  normalizationTime
 } from 'service/backend-django-rest-errdepo/util';
 import { waitForElementToBeRemoved } from '@testing-library/dom';
 
@@ -32,8 +32,8 @@ describe('util methods', () => {
     result = signUpMessageToJp('This password is too common.');
     expect(result).toBe('パスワードはもうちょっとひねってください\n');
   });
-  it('', () => {
-    const result = sharpTo23('# aaaa \n## bbb');
-    expect(result).toBe('%23 aaaa %0D%0A%23%23 bbb');
+  it('nomalizationTime', () => {
+    const result = normalizationTime('2020-01-30T14:07:17.059986+09:00');
+    expect(result).toBe('2020-01-30 14:07:17');
   });
 });

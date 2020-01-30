@@ -1,19 +1,12 @@
 import React, { FC, useEffect } from 'react';
 import { InjectedFormikProps } from 'formik';
-import {
-  Paper,
-  TextField,
-  Button,
-  Typography,
-  Card,
-  CardContent,
-  Chip
-} from '@material-ui/core';
+import { Paper, TextField, Button } from '@material-ui/core';
 import ReplyIcon from '@material-ui/icons/Reply';
 import CreateIcon from '@material-ui/icons/Create';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Autocomplete } from '@material-ui/lab';
 import { GetConfirmParam, PostReportPram } from './action';
+import { Report } from 'commonComponents/ReportComponent';
 
 /* Styles
  ***********************************************/
@@ -33,57 +26,8 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: theme.spacing(1)
     },
     button: {
-      marginTop: theme.spacing(2)
-    },
-    comf_table: {
-      minWidth: 200,
-      maxWidth: 300,
-      '& th, td': {
-        border: 'solid 1px #ccc'
-      }
-    },
-    conf_card: {
-      margin: theme.spacing(1),
-      '& h6.MuiTypography-root': {
-        padding: '0.1em 0.2em',
-        color: '#494949',
-        background: '#f4f4f4',
-        borderLeft: 'solid 5px #9cd495',
-        borderBottom: 'solid 3px #d7d7d7',
-        fontSize: '1rem'
-      },
-      '& td.code': {
-        width: '100%'
-      },
-      '& pre': {
-        paddingTop: theme.spacing(1),
-        paddingLeft: theme.spacing(1),
-        paddingBottom: theme.spacing(1)
-      },
-      '& code': {
-        padding: '2px'
-      }
-    },
-    chip_lang: {
-      backgroundColor: '#95bad4',
-      margin: theme.spacing(0.5)
-    },
-    chip_fw: {
-      backgroundColor: '#d0d495',
-      margin: theme.spacing(0.5)
-    },
-    chip_creater: {
-      backgroundColor: '#9cd495',
-      margin: theme.spacing(0.5)
-    },
-    pre_line_field: {
-      whiteSpace: 'pre-line'
-    },
-    tg_errmsg: {
-      backgroundColor: '#002b36',
-      color: '#b2c3c5',
-      padding: theme.spacing(1),
-      fontSize: '0.8rem'
+      marginTop: theme.spacing(2),
+      backgroundColor: '#7EC2C2'
     }
   })
 );
@@ -212,7 +156,6 @@ const PostReport: FC<InjectedFormikProps<
             label="環境"
             multiline
             variant="filled"
-            rows="4"
             fullWidth
             data-testid="inputEnv"
             value={props.values.inputEnv}
@@ -223,7 +166,6 @@ const PostReport: FC<InjectedFormikProps<
             label="エラーメッセージ"
             multiline
             variant="filled"
-            rows="2"
             fullWidth
             data-testid="inputErrmsg"
             value={props.values.inputErrmsg}
@@ -234,7 +176,6 @@ const PostReport: FC<InjectedFormikProps<
             label="説明"
             multiline
             variant="filled"
-            rows="2"
             fullWidth
             data-testid="inputDescription"
             value={props.values.inputDescription}
@@ -245,7 +186,6 @@ const PostReport: FC<InjectedFormikProps<
             label="対応策"
             multiline
             variant="filled"
-            rows="2"
             fullWidth
             data-testid="inputCorrespondence"
             value={props.values.inputCorrespondence}
@@ -269,58 +209,14 @@ const PostReport: FC<InjectedFormikProps<
       {/* confirm Report
        ***********************************************/}
       <Paper className={classes.paper}>
-        <Chip size="small" className={classes.chip_lang} label={props.lang} />
-        {props.fw ? (
-          <Chip size="small" className={classes.chip_fw} label={props.fw} />
-        ) : null}
-        <Chip size="small" className={classes.chip_creater} label="user予定" />
-
-        <Card className={classes.conf_card}>
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
-              エラーメッセージ
-            </Typography>
-            <div className={classes.pre_line_field}>
-              <Typography className={classes.tg_errmsg}>
-                {props.errmsg}
-              </Typography>
-            </div>
-          </CardContent>
-        </Card>
-        <Card className={classes.conf_card}>
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
-              環境
-            </Typography>
-            <div className={classes.pre_line_field}>
-              <Typography>{props.env}</Typography>
-            </div>
-          </CardContent>
-        </Card>
-        <Card className={classes.conf_card}>
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
-              エラーについて説明
-            </Typography>
-            <div
-              dangerouslySetInnerHTML={{
-                __html: props.description || ''
-              }}
-            />
-          </CardContent>
-        </Card>
-        <Card className={classes.conf_card}>
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
-              対応策
-            </Typography>
-            <div
-              dangerouslySetInnerHTML={{
-                __html: props.correspondence || ''
-              }}
-            />
-          </CardContent>
-        </Card>
+        <Report
+          lang={props.lang}
+          fw={props.fw}
+          env={props.env}
+          errmsg={props.errmsg}
+          description={props.description}
+          correspondence={props.correspondence}
+        />
         <Button
           variant="contained"
           color="secondary"
