@@ -1,3 +1,5 @@
+import { number } from 'yup';
+
 export interface Profile {
   id: number;
   user_id: number;
@@ -27,4 +29,11 @@ export interface Report {
   correspondence: string;
   owner_id: number;
   owner: string;
+}
+
+export interface ReportList {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: Report[];
 }

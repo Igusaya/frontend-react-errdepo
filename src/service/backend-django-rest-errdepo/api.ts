@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Profile, PutProfile, Report } from './model';
+import { Profile, PutProfile, Report, ReportList } from './model';
 
 import {
   signUpMessageToJp,
@@ -315,11 +315,13 @@ export const getReportFactory = (optionConfig?: ApiConfig) => {
   const getReport = async () => {
     try {
       const response = await instance.get('report/');
-      const results: Report[] = response.data;
-      const reports = results.map((report: Report) => {
+      let responseData: ReportList = response.data;
+      const results = responseData.results.map((report: Report) => {
         return { ...report, modify: normalizationTime(report.modify) };
       });
-      return reports;
+
+      responseData.results = results;
+      return responseData;
     } catch (error) {
       throw new Error(
         'ただいま混み合っております。時間をおいて再度お試しください。 API status: ' +

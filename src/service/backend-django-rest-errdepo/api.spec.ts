@@ -12,7 +12,7 @@ import {
   postReportFactory,
   getReportFactory
 } from 'service/backend-django-rest-errdepo/api';
-import { getLang } from 'postReport/action';
+import { getLang } from 'actions/report';
 
 /* Local storage set up
  ***********************************************/
@@ -362,17 +362,21 @@ describe('backend-django-rest-errdepo API handlers', () => {
    ***********************************************/
   describe('Getting reports', () => {
     it('should succeed', async () => {
-      mock.onGet('report/').reply(200, [
-        { test: 'test', modify: '2020-01-29T00:05:31.319351+09:00' },
-        { test: 'test2', modify: '2020-01-29T00:05:31.319351+09:00' }
-      ]);
+      mock.onGet('report/').reply(200, {
+        results: [
+          { test: 'test', modify: '2020-01-29T00:05:31.319351+09:00' },
+          { test: 'test2', modify: '2020-01-29T00:05:31.319351+09:00' }
+        ]
+      });
 
       const getReport = getReportFactory();
       const result = await getReport();
-      expect(result).toEqual([
-        { test: 'test', modify: '2020-01-29 00:05:31' },
-        { test: 'test2', modify: '2020-01-29 00:05:31' }
-      ]);
+      expect(result).toEqual({
+        results: [
+          { test: 'test', modify: '2020-01-29 00:05:31' },
+          { test: 'test2', modify: '2020-01-29 00:05:31' }
+        ]
+      });
     });
   });
 });

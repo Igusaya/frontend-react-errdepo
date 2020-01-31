@@ -7,9 +7,9 @@ import createSagaMiddleware from 'redux-saga';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 
-import App from 'app/container';
-import reducer from 'reducer';
-import rootSaga from 'saga';
+import App from 'containers';
+import reducer from 'reducers';
+import rootSaga from 'sagas';
 
 const sagaMiddleWare = createSagaMiddleware();
 const enhancer =
