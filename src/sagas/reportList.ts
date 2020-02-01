@@ -1,21 +1,21 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 
-import { getReports, ActionType } from 'actions/reportList';
-import { getReportFactory } from 'service/backend-django-rest-errdepo/api';
+import { getReportList, ActionType } from 'actions/reportList';
+import { getReportListFactory } from 'service/backend-django-rest-errdepo/api';
 
-function* runGetReports(
-  handler: typeof getReportFactory,
-  action: ReturnType<typeof getReports.start>
+function* runGetReportList(
+  handler: typeof getReportListFactory,
+  action: ReturnType<typeof getReportList.start>
 ) {
   try {
     const api = handler();
     const reports = yield call(api);
-    yield put(getReports.succeed(reports));
+    yield put(getReportList.succeed(reports));
   } catch (error) {
-    yield put(getReports.fail(error));
+    yield put(getReportList.fail(error.message));
   }
 }
 
-export function* watchGetReports(handler: typeof getReportFactory) {
-  yield takeLatest(ActionType.GET_REPORTS_START, runGetReports, handler);
+export function* watchGetReportList(handler: typeof getReportListFactory) {
+  yield takeLatest(ActionType.GET_REPORTS_START, runGetReportList, handler);
 }

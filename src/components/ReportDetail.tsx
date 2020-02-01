@@ -1,8 +1,7 @@
 import React, { FC, useEffect } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { Grid, Paper, Fab } from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { Link, useParams } from 'react-router-dom';
+import { Paper } from '@material-ui/core';
+import { useParams } from 'react-router-dom';
 
 import { Report } from 'service/backend-django-rest-errdepo/model';
 import { Report as ReportComponent } from 'components/common/ReportComponent';
@@ -52,22 +51,41 @@ const useStyles = makeStyles((theme: Theme) =>
 /* Props
  ***********************************************/
 export interface ReportProps {
-  report?: Report;
+  report: Report;
+  selectReport: (id: number) => void;
+  getReport: (id: number) => void;
 }
 /* Function component
  ***********************************************/
-const ViewReport: FC<ReportProps> = ({ report }) => {
-  let { reportId } = useParams();
-  useEffect(() => {}, []); // eslint-disable-line react-hooks/exhaustive-deps
+const ReportDetail: FC<ReportProps> = ({ report, selectReport, getReport }) => {
+  const { reportId } = useParams();
+  useEffect(() => {
+    selectReport(Number(reportId));
+
+    if (report.id === -1) {
+      console.log('apiたたくー');
+      getReport(Number(reportId));
+    }
+  }, [report.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const classes = useStyles();
   return (
     <>
-      <Paper>
-        <ReportComponent />
+      <Paper className={classes.paper}>
+        <ReportComponent
+          lang={report.lang}
+          fw={report.fw}
+          env={report.env}
+          errmsg={report.errmsg}
+          description={report.description}
+          correspondence={report.correspondence}
+          owner={report.owner}
+          //ownerImage={}
+          modify={report.modify}
+        />
       </Paper>
     </>
   );
 };
 
-export default ViewReport;
+export default ReportDetail;

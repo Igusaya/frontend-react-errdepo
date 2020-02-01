@@ -10,9 +10,11 @@ import {
   getLangFactory,
   getConfirmFactory,
   postReportFactory,
-  getReportFactory
+  getReportListFactory,
+  getReportDetailFactory
 } from 'service/backend-django-rest-errdepo/api';
 import { getLang } from 'actions/report';
+import { indigo } from '@material-ui/core/colors';
 
 /* Local storage set up
  ***********************************************/
@@ -358,9 +360,9 @@ describe('backend-django-rest-errdepo API handlers', () => {
       }
     });
   });
-  /* Get Reports test
+  /* Get ReportList test
    ***********************************************/
-  describe('Getting reports', () => {
+  describe('Getting reportList', () => {
     it('should succeed', async () => {
       mock.onGet('report/').reply(200, {
         results: [
@@ -369,7 +371,7 @@ describe('backend-django-rest-errdepo API handlers', () => {
         ]
       });
 
-      const getReport = getReportFactory();
+      const getReport = getReportListFactory();
       const result = await getReport();
       expect(result).toEqual({
         results: [
@@ -377,6 +379,64 @@ describe('backend-django-rest-errdepo API handlers', () => {
           { test: 'test2', modify: '2020-01-29 00:05:31' }
         ]
       });
+    });
+    it('should fail with 500', async () => {
+      mock.onGet('report/').reply(500);
+      try {
+        const getReport = getReportListFactory();
+        await getReport();
+      } catch (error) {
+        expect(error.message).toBe(
+          'ただいま混み合っております。時間をおいて再度お試しください。 API status: 500'
+        );
+      }
+    });
+  });
+
+  /* Get ReportDetail test
+   ***********************************************/
+  describe('Getting report detail', () => {
+    it('should succeed', async () => {
+      mock.onGet('report/1/').reply(200, {
+        id: 1,
+        created: '2020-01-31T12:48:02.209577+09:00',
+        modify: '2020-01-31T12:48:02.209629+09:00',
+        lang: 'Python',
+        fw: 'Django-Rest',
+        env: 'dflksajflkasjfdlkasjflkdasjlkfjsdlkjfslkjflsa',
+        errmsg: 'dflksajflkasjfdlkasjflkdasjlkfjsdlkjfslkjflsa',
+        description: '<p>bbbbbbbbbbbbbbb</p>',
+        correspondence: '<p>fsdafdsafdsafda</p>',
+        owner_id: 26,
+        owner: 'たなか'
+      });
+
+      const getReportDetail = getReportDetailFactory();
+      const result = await getReportDetail(1);
+      expect(result).toEqual({
+        id: 1,
+        created: '2020-01-31T12:48:02.209577+09:00',
+        modify: '2020-01-31 12:48:02',
+        lang: 'Python',
+        fw: 'Django-Rest',
+        env: 'dflksajflkasjfdlkasjflkdasjlkfjsdlkjfslkjflsa',
+        errmsg: 'dflksajflkasjfdlkasjflkdasjlkfjsdlkjfslkjflsa',
+        description: '<p>bbbbbbbbbbbbbbb</p>',
+        correspondence: '<p>fsdafdsafdsafda</p>',
+        owner_id: 26,
+        owner: 'たなか'
+      });
+    });
+    it('should fail with 500', async () => {
+      mock.onGet('report/1/').reply(500);
+      try {
+        const getReportDetail = getReportDetailFactory();
+        await getReportDetail(1);
+      } catch (error) {
+        expect(error.message).toBe(
+          'ただいま混み合っております。時間をおいて再度お試しください。 API status: 500'
+        );
+      }
     });
   });
 });

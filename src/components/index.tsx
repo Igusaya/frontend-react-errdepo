@@ -15,7 +15,7 @@ import User from 'containers/UserMenu';
 import { Profile } from 'service/backend-django-rest-errdepo/model';
 import PostReport from 'containers/MakeReport';
 import ViewReportList from 'containers/ReportList';
-import ViewReport from 'viewReport/component';
+import ReportDetail from 'containers/ReportDetail';
 
 /* Props
  ***********************************************/
@@ -100,7 +100,7 @@ const App: React.FC<AppProps> = ({ isSignIn = false, profile }) => {
               <PostReport />
             </Route>
             <Route path="/report/:reportId">
-              <ViewReport />
+              <ReportDetail />
             </Route>
             <Route path="/">
               <ViewReportList />

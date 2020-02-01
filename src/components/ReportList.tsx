@@ -2,7 +2,7 @@ import React, { FC, useEffect } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Grid, Paper, Fab } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { Report } from 'service/backend-django-rest-errdepo/model';
 import { Errmsg, Chips, InnerHTML } from 'components/common/ReportComponent';
@@ -58,9 +58,6 @@ export interface ReportListProps {
 /* Function component
  ***********************************************/
 const ReportList: FC<ReportListProps> = ({ getReports, reports }) => {
-  let { reportId } = useParams();
-  console.log(reportId);
-
   useEffect(() => {
     getReports();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -75,7 +72,7 @@ const ReportList: FC<ReportListProps> = ({ getReports, reports }) => {
                 <Chips
                   lang={report.lang}
                   fw={report.fw}
-                  user={report.owner}
+                  owner={report.owner}
                   modify={report.modify}
                 />
               </Grid>

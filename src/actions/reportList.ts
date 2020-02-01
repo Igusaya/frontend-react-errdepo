@@ -1,4 +1,4 @@
-import { Report, ReportList } from 'service/backend-django-rest-errdepo/model';
+import { ReportList } from 'service/backend-django-rest-errdepo/model';
 
 /* Constants
  ***********************************************/
@@ -12,7 +12,7 @@ export enum ActionType {
 
 /* Action
  ***********************************************/
-export const getReports = {
+export const getReportList = {
   start: () => ({
     type: ActionType.GET_REPORTS_START as typeof ActionType.GET_REPORTS_START
   }),
@@ -30,6 +30,6 @@ export const getReports = {
 };
 
 export type viewReportListAction =
-  | ReturnType<typeof getReports.start>
-  | ReturnType<typeof getReports.succeed>
-  | ReturnType<typeof getReports.fail>;
+  | ReturnType<typeof getReportList.start>
+  | ReturnType<typeof getReportList.succeed>
+  | ReturnType<typeof getReportList.fail>;

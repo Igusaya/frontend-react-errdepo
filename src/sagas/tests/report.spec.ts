@@ -1,8 +1,18 @@
 import { expectSaga } from 'redux-saga-test-plan';
 
-import { watchGetLang, watchPostReport, watchGetConfirm } from '../report';
+import {
+  watchGetLang,
+  watchPostReport,
+  watchGetConfirm,
+  watchGetReportDetail
+} from '../report';
 import reportReducer, { initialState } from '../../reducers/report';
-import { getLang, postReport, getConfirmReport } from '../../actions/report';
+import {
+  getLang,
+  postReport,
+  getConfirmReport,
+  getReportDetail
+} from '../../actions/report';
 
 /* Test
  ***********************************************/
@@ -139,6 +149,63 @@ describe('user saga', () => {
       .put(postReport.fail('err'))
       .withReducer(reportReducer)
       .hasFinalState({ ...initialState, error: 'err', err: true })
+      .silentRun(1);
+  });
+
+  it('should get report detail succeeded', async () => {
+    const getReportDetailResult = {
+      id: 1,
+      created: '2020-01-31T12:48:02.209577+09:00',
+      modify: '2020-01-31 12:48:02',
+      lang: 'Python',
+      fw: 'Django-Rest',
+      env: 'dflksajflkasjfdlkasjflkdasjlkfjsdlkjfslkjflsa',
+      errmsg: 'dflksajflkasjfdlkasjflkdasjlkfjsdlkjfslkjflsa',
+      description: '<p>bbbbbbbbbbbbbbb</p>',
+      correspondence: '<p>fsdafdsafdsafda</p>',
+      owner_id: 26,
+      owner: 'たなか'
+    };
+    handlerMock.mockReturnValue(() => getReportDetailResult);
+    return expectSaga(watchGetReportDetail, handlerMock)
+      .dispatch(getReportDetail.start(1))
+      .put(getReportDetail.succeed(getReportDetailResult))
+      .withReducer(reportReducer)
+      .hasFinalState({
+        ...initialState,
+        reportId: 1,
+        report: { ...getReportDetailResult }
+      })
+      .silentRun(1);
+  });
+
+  it('should get report detail 500 failed', async () => {
+    const getReportDetailResult = {
+      id: 1,
+      created: '2020-01-31T12:48:02.209577+09:00',
+      modify: '2020-01-31 12:48:02',
+      lang: 'Python',
+      fw: 'Django-Rest',
+      env: 'dflksajflkasjfdlkasjflkdasjlkfjsdlkjfslkjflsa',
+      errmsg: 'dflksajflkasjfdlkasjflkdasjlkfjsdlkjfslkjflsa',
+      description: '<p>bbbbbbbbbbbbbbb</p>',
+      correspondence: '<p>fsdafdsafdsafda</p>',
+      owner_id: 26,
+      owner: 'たなか'
+    };
+    handlerMock.mockReturnValue(() => {
+      throw new Error('err');
+    });
+    return expectSaga(watchGetReportDetail, handlerMock)
+      .dispatch(getReportDetail.start(1))
+      .put(getReportDetail.fail('err'))
+      .withReducer(reportReducer)
+      .hasFinalState({
+        ...initialState,
+        reportId: 1,
+        error: 'err',
+        err: true
+      })
       .silentRun(1);
   });
 });

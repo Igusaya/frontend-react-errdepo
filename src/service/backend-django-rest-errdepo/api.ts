@@ -309,7 +309,7 @@ export const postReportFactory = (optionConfig?: ApiConfig) => {
  * Get {baseURL}/report/
  * @param optionConfig
  */
-export const getReportFactory = (optionConfig?: ApiConfig) => {
+export const getReportListFactory = (optionConfig?: ApiConfig) => {
   const config = { ...DEFAULT_API_CONFIG, ...optionConfig };
   const instance = axios.create(config);
   const getReport = async () => {
@@ -330,4 +330,33 @@ export const getReportFactory = (optionConfig?: ApiConfig) => {
     }
   };
   return getReport;
+};
+
+export const getReportDetailFactory = (optionConfig?: ApiConfig) => {
+  const token = localStorage.getItem('todolistsbackendkey');
+  const config = {
+    ...DEFAULT_API_CONFIG,
+    ...optionConfig,
+    headers: {
+      Authorization: 'Token ' + token
+    }
+  };
+  const instance = axios.create(config);
+
+  const getReportDetail = async (id: number) => {
+    try {
+      const response = await instance.get(`report/${id}/`);
+      const result = {
+        ...response.data,
+        modify: normalizationTime(response.data.modify)
+      };
+      return result;
+    } catch (error) {
+      throw new Error(
+        'ただいま混み合っております。時間をおいて再度お試しください。 API status: ' +
+          error.response.status
+      );
+    }
+  };
+  return getReportDetail;
 };

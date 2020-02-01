@@ -4,12 +4,14 @@ import {
   getLang,
   ActionType,
   getConfirmReport,
-  postReport
+  postReport,
+  getReportDetail
 } from 'actions/report';
 import {
   getLangFactory,
   getConfirmFactory,
-  postReportFactory
+  postReportFactory,
+  getReportDetailFactory
 } from 'service/backend-django-rest-errdepo/api';
 
 function* runGetLang(
@@ -69,6 +71,19 @@ function* runPostReport(
   }
 }
 
+function* runGetReportDetail(
+  handler: typeof getReportDetailFactory,
+  action: ReturnType<typeof getReportDetail.start>
+) {
+  try {
+    const api = handler();
+    const report = yield call(api, action.payload.id);
+    yield put(getReportDetail.succeed(report));
+  } catch (error) {
+    yield put(getReportDetail.fail(error.message));
+  }
+}
+
 export function* watchGetLang(handler: typeof getLangFactory) {
   yield takeLatest(ActionType.GET_LANG_START, runGetLang, handler);
 }
@@ -79,4 +94,12 @@ export function* watchGetConfirm(handler: typeof getConfirmFactory) {
 
 export function* watchPostReport(handler: typeof postReportFactory) {
   yield takeLatest(ActionType.POST_REPORT_START, runPostReport, handler);
+}
+
+export function* watchGetReportDetail(handler: typeof getReportDetailFactory) {
+  yield takeLatest(
+    ActionType.GET_REPORT_DETAIL_START,
+    runGetReportDetail,
+    handler
+  );
 }

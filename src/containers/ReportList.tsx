@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 
 import ReportList from 'components/ReportList';
-import { getReports } from '../actions/reportList';
+import { getReportList } from '../actions/reportList';
 import { State } from 'reducers';
 
 interface DispatchProps {
@@ -17,7 +17,7 @@ const mapStateToProps = (state: State) => {
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
   return {
-    getReports: () => dispatch(getReports.start())
+    getReports: () => dispatch(getReportList.start())
   };
 };
 

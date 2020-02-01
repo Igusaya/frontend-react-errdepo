@@ -3,6 +3,10 @@ import { Report } from 'service/backend-django-rest-errdepo/model';
 /* Constants
  ***********************************************/
 export enum ActionType {
+  SELECT_REPORT_DETAIL = 'SELECT_REPORT_DETAIL',
+  GET_REPORT_DETAIL_START = 'GET_REPORT_DETAIL_START',
+  GET_REPORT_DETAIL_SUCCEED = 'GET_REPORT_DETAIL_SUCCEED',
+  GET_REPORT_DETAIL_FAIL = 'GET_REPORT_DETAIL_FAIL',
   GET_LANG_START = 'GET_LANG_START',
   GET_LANG_SUCCEED = 'GET_LANG_SUCCEED',
   GET_LANG_FAIL = 'GET_LANG_FAIL',
@@ -37,6 +41,29 @@ export interface GetConfirmResult {
 
 /* Action
  ***********************************************/
+export const selectReportDetail = (id: number) => ({
+  type: ActionType.SELECT_REPORT_DETAIL as typeof ActionType.SELECT_REPORT_DETAIL,
+  id: id
+});
+
+export const getReportDetail = {
+  start: (id: number) => ({
+    type: ActionType.GET_REPORT_DETAIL_START as typeof ActionType.GET_REPORT_DETAIL_START,
+    payload: { id }
+  }),
+
+  succeed: (result: Report) => ({
+    type: ActionType.GET_REPORT_DETAIL_SUCCEED as typeof ActionType.GET_REPORT_DETAIL_SUCCEED,
+    payload: { result }
+  }),
+
+  fail: (error: string) => ({
+    type: ActionType.GET_REPORT_DETAIL_FAIL as typeof ActionType.GET_REPORT_DETAIL_FAIL,
+    payload: { error },
+    err: true
+  })
+};
+
 export const getLang = {
   start: () => ({
     type: ActionType.GET_LANG_START as typeof ActionType.GET_LANG_START
@@ -115,7 +142,11 @@ export const backToReport = {
   })
 };
 
-export type makeReportAction =
+export type reportAction =
+  | ReturnType<typeof getReportDetail.start>
+  | ReturnType<typeof getReportDetail.succeed>
+  | ReturnType<typeof getReportDetail.fail>
+  | ReturnType<typeof selectReportDetail>
   | ReturnType<typeof getLang.start>
   | ReturnType<typeof getLang.succeed>
   | ReturnType<typeof getLang.fail>

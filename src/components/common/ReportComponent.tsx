@@ -65,6 +65,9 @@ export interface ReportProps {
   errmsg?: string;
   description?: string;
   correspondence?: string;
+  owner?: string;
+  ownerImage?: string;
+  modify?: string;
 }
 
 /* Function component
@@ -75,12 +78,23 @@ export const Report: FC<ReportProps> = ({
   env,
   errmsg,
   description,
-  correspondence
+  correspondence,
+  owner,
+  ownerImage,
+  modify
 }) => {
   const classes = useStyles();
   return (
     <>
-      {lang ? <Chips lang={lang} fw={fw} /> : null}
+      {lang ? (
+        <Chips
+          lang={lang}
+          fw={fw}
+          owner={owner}
+          ownerImage={ownerImage}
+          modify={modify}
+        />
+      ) : null}
       <Card className={classes.conf_card}>
         <CardContent>
           <Typography variant="h6" gutterBottom>
@@ -133,10 +147,10 @@ export const Errmsg: FC<{ errmsg: string }> = ({ errmsg }) => {
 export const Chips: FC<{
   lang: string;
   fw?: string;
-  user?: string;
-  userImage?: string;
+  owner?: string;
+  ownerImage?: string;
   modify?: string;
-}> = ({ lang, fw, user, userImage, modify }) => {
+}> = ({ lang, fw, owner, ownerImage, modify }) => {
   const classes = useStyles();
   return (
     <>
@@ -146,8 +160,8 @@ export const Chips: FC<{
           {fw ? (
             <Chip size="small" className={classes.chip_fw} label={fw} />
           ) : null}
-          {user ? (
-            <Chip size="small" className={classes.chip_creater} label={user} />
+          {owner ? (
+            <Chip size="small" className={classes.chip_creater} label={owner} />
           ) : null}
         </Grid>
         <Grid item xs={6}>

@@ -1,21 +1,24 @@
 import { Reducer } from 'redux';
 
-import { ActionType, makeReportAction } from 'actions/report';
+import { ActionType, reportAction } from 'actions/report';
+
+export interface ReportState {
+  id?: number;
+  created?: string;
+  modify?: string;
+  lang?: string;
+  fw?: string;
+  env?: string;
+  errmsg?: string;
+  description?: string;
+  correspondence?: string;
+  owner_id?: number;
+  owner?: string;
+}
 
 export interface State {
-  report?: {
-    id?: number;
-    created?: string;
-    modify?: string;
-    lang?: string;
-    fw?: string;
-    env?: string;
-    errmsg?: string;
-    description?: string;
-    correspondence?: string;
-    owner_id?: number;
-    owner?: string;
-  };
+  reportId?: number;
+  report?: ReportState;
   viewConfirm: boolean;
   lang?: string[];
   error?: string | null;
@@ -26,15 +29,36 @@ export const initialState: State = {
   viewConfirm: false
 };
 
-export type Action = makeReportAction;
+export type Action = reportAction;
 
 /* Reducer
  ***********************************************/
-const reportReducer: Reducer<State, makeReportAction> = (
+const reportReducer: Reducer<State, reportAction> = (
   state: State = initialState,
-  action: makeReportAction
+  action: reportAction
 ): State => {
   switch (action.type) {
+    case ActionType.SELECT_REPORT_DETAIL:
+      return {
+        ...state,
+        reportId: action.id
+      };
+    case ActionType.GET_REPORT_DETAIL_START:
+      return {
+        ...state,
+        reportId: action.payload.id
+      };
+    case ActionType.GET_REPORT_DETAIL_SUCCEED:
+      return {
+        ...state,
+        report: action.payload.result
+      };
+    case ActionType.GET_REPORT_DETAIL_FAIL:
+      return {
+        ...state,
+        error: action.payload.error,
+        err: action.err
+      };
     case ActionType.GET_LANG_START:
       return {
         ...state

@@ -26,7 +26,6 @@ const reducer: Reducer<State, viewReportListAction> = (
   state: State = initialState,
   action: viewReportListAction
 ): State => {
-  console.log(state);
   switch (action.type) {
     case ActionType.GET_REPORTS_START:
       return {

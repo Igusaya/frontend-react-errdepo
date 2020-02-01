@@ -3,8 +3,13 @@ import { all, fork } from 'redux-saga/effects';
 import { watchSignUp } from 'sagas/signUp';
 import { watchSignIn } from 'sagas/signIn';
 import { watchSignOut, watchGetProfile, watchPutProfile } from 'sagas/userMenu';
-import { watchGetLang, watchGetConfirm, watchPostReport } from 'sagas/report';
-import { watchGetReports } from 'sagas/reportList';
+import {
+  watchGetLang,
+  watchGetConfirm,
+  watchPostReport,
+  watchGetReportDetail
+} from 'sagas/report';
+import { watchGetReportList } from 'sagas/reportList';
 import * as api from 'service/backend-django-rest-errdepo/api';
 
 export default function* rootSaga() {
@@ -17,6 +22,7 @@ export default function* rootSaga() {
     fork(watchGetLang, api.getLangFactory),
     fork(watchGetConfirm, api.getConfirmFactory),
     fork(watchPostReport, api.postReportFactory),
-    fork(watchGetReports, api.getReportFactory)
+    fork(watchGetReportList, api.getReportListFactory),
+    fork(watchGetReportDetail, api.getReportDetailFactory)
   ]);
 }
