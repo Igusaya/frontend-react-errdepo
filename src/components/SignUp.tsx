@@ -73,7 +73,6 @@ const SignUp: FC<InjectedFormikProps<SignUpProps, SignUpFormValue>> = props => {
       {/* Sign up button
        ***********************************************/}
       <Button
-        color="primary"
         variant="outlined"
         className={classes.link}
         onClick={handleSignUpOpen}

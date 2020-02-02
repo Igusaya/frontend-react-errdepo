@@ -63,8 +63,8 @@ export interface ReportProps {
   fw?: string;
   env?: string;
   errmsg?: string;
-  description?: string;
-  correspondence?: string;
+  descriptionHTML?: string;
+  correspondenceHTML?: string;
   owner?: string;
   ownerImage?: string;
   modify?: string;
@@ -77,8 +77,8 @@ export const Report: FC<ReportProps> = ({
   fw,
   env,
   errmsg,
-  description,
-  correspondence,
+  descriptionHTML,
+  correspondenceHTML,
   owner,
   ownerImage,
   modify
@@ -118,7 +118,7 @@ export const Report: FC<ReportProps> = ({
           <Typography variant="h6" gutterBottom>
             エラーについて説明
           </Typography>
-          {description ? <InnerHTML html={description} /> : null}
+          {descriptionHTML ? <InnerHTML html={descriptionHTML} /> : null}
         </CardContent>
       </Card>
       <Card className={classes.conf_card}>
@@ -126,7 +126,7 @@ export const Report: FC<ReportProps> = ({
           <Typography variant="h6" gutterBottom>
             対応策
           </Typography>
-          {correspondence ? <InnerHTML html={correspondence} /> : null}
+          {correspondenceHTML ? <InnerHTML html={correspondenceHTML} /> : null}
         </CardContent>
       </Card>
     </>

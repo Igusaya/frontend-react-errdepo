@@ -14,6 +14,7 @@ import user, {
   Action as UserAction,
   initialState as userInitialState
 } from 'reducers/user';
+import { ActionType as ReportActionType } from 'actions/report';
 
 type Action = UserAction | ReportAction;
 
@@ -38,7 +39,21 @@ const crossSliceReducer: Reducer<State, Action> = (
   state: State = initialState,
   action: Action
 ): State => {
-  return state;
+  switch (action.type) {
+    case ReportActionType.SELECT_REPORT_DETAIL:
+      const reportDetail = state.reportList.reportList.results.find(
+        report => report.id === action.id
+      );
+      return {
+        ...state,
+        report: {
+          ...state.report,
+          report: reportDetail
+        }
+      };
+    default:
+      return state;
+  }
 };
 
 const rootReducer: Reducer<State, Action> = (

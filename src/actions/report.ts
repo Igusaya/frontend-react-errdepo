@@ -19,7 +19,10 @@ export enum ActionType {
   POST_REPORT_START = 'POST_REPORT_START',
   POST_REPORT_SUCCEED = 'POST_REPORT_SUCCEED',
   POST_REPORT_FAIL = 'POST_REPORT_FAIL',
-  BACK_TO_CREATE_REPORT = 'BACK_TO_CREATE_REPORT'
+  BACK_TO_CREATE_REPORT = 'BACK_TO_CREATE_REPORT',
+  PUT_REPORT_START = 'PUT_REPORT_START',
+  PUT_REPORT_SUCCEED = 'PUT_REPORT_SUCCEED',
+  PUT_REPORT_FAIL = 'PUT_REPORT_FAIL'
 }
 
 /* Interface
@@ -32,12 +35,15 @@ export interface GetConfirmParam {
   description: string;
   correspondence: string;
 }
-export type PostReportPram = GetConfirmParam;
 
 export interface GetConfirmResult {
-  description: string;
-  correspondence: string;
+  descriptionHTML: string;
+  correspondenceHTML: string;
 }
+
+export type PostReportPram = GetConfirmParam & GetConfirmResult;
+
+export type PutReportPram = GetConfirmParam & GetConfirmResult & { id: number };
 
 /* Action
  ***********************************************/
@@ -142,6 +148,24 @@ export const backToReport = {
   })
 };
 
+export const putReport = {
+  start: (param: PutReportPram) => ({
+    type: ActionType.PUT_REPORT_START as typeof ActionType.PUT_REPORT_START,
+    payload: { param }
+  }),
+
+  succeed: (result: Report) => ({
+    type: ActionType.PUT_REPORT_SUCCEED as typeof ActionType.PUT_REPORT_SUCCEED,
+    payload: { result }
+  }),
+
+  fail: (error: string) => ({
+    type: ActionType.PUT_REPORT_FAIL as typeof ActionType.PUT_REPORT_FAIL,
+    payload: { error },
+    err: true
+  })
+};
+
 export type reportAction =
   | ReturnType<typeof getReportDetail.start>
   | ReturnType<typeof getReportDetail.succeed>
@@ -159,4 +183,7 @@ export type reportAction =
   | ReturnType<typeof postReport.start>
   | ReturnType<typeof postReport.succeed>
   | ReturnType<typeof postReport.fail>
-  | ReturnType<typeof backToReport.action>;
+  | ReturnType<typeof backToReport.action>
+  | ReturnType<typeof putReport.start>
+  | ReturnType<typeof putReport.succeed>
+  | ReturnType<typeof putReport.fail>;

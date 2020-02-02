@@ -22,11 +22,13 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import EditIcon from '@material-ui/icons/Edit';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import CreateIcon from '@material-ui/icons/Create';
+import NoteAddIcon from '@material-ui/icons/NoteAdd';
 import { InjectedFormikProps } from 'formik';
 import NavigationIcon from '@material-ui/icons/Navigation';
 
 import { Profile } from 'service/backend-django-rest-errdepo/model';
 import { PutProfileParams } from 'actions/userMenu';
+import { Link } from 'react-router-dom';
 
 /* Styles
  ***********************************************/
@@ -110,6 +112,12 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(0, 1),
       minWidth: '34px',
       borderRadius: '17px'
+    },
+    noline: {
+      '& a': {
+        textDecoration: 'none',
+        color: 'rgba(0, 0, 0, 0.87)'
+      }
     }
   })
 );
@@ -236,22 +244,35 @@ const UserMenu: FC<InjectedFormikProps<
         keepMounted
         open={Boolean(anchorEl)}
         onClose={handleClose}
+        className={classes.noline}
       >
+        <Link to="/post_report">
+          <StyledMenuItem onClick={handleClose}>
+            <ListItemIcon>
+              <NoteAddIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText primary="投稿" />
+          </StyledMenuItem>
+        </Link>
+
         <StyledMenuItem onClick={handleModalOpen}>
           <ListItemIcon>
             <CreateIcon fontSize="small" />
           </ListItemIcon>
           <ListItemText primary="Profile" />
         </StyledMenuItem>
-        <StyledMenuItem
-          onClick={handleSignOutClick}
-          data-testid="sign-out-button"
-        >
-          <ListItemIcon>
-            <ExitToAppIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText primary="Sign Out" />
-        </StyledMenuItem>
+
+        <Link to="/">
+          <StyledMenuItem
+            onClick={handleSignOutClick}
+            data-testid="sign-out-button"
+          >
+            <ListItemIcon>
+              <ExitToAppIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText primary="Sign Out" />
+          </StyledMenuItem>
+        </Link>
       </StyledMenu>
 
       {/* Profile

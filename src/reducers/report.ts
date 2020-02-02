@@ -12,6 +12,8 @@ export interface ReportState {
   errmsg?: string;
   description?: string;
   correspondence?: string;
+  descriptionHTML?: string;
+  correspondenceHTML?: string;
   owner_id?: number;
   owner?: string;
 }
@@ -38,11 +40,15 @@ const reportReducer: Reducer<State, reportAction> = (
   action: reportAction
 ): State => {
   switch (action.type) {
+    /* Select report detail
+     ***********************************************/
     case ActionType.SELECT_REPORT_DETAIL:
       return {
         ...state,
         reportId: action.id
       };
+    /* Get report detail
+     ***********************************************/
     case ActionType.GET_REPORT_DETAIL_START:
       return {
         ...state,
@@ -59,6 +65,8 @@ const reportReducer: Reducer<State, reportAction> = (
         error: action.payload.error,
         err: action.err
       };
+    /* Get lang
+     ***********************************************/
     case ActionType.GET_LANG_START:
       return {
         ...state
@@ -74,6 +82,8 @@ const reportReducer: Reducer<State, reportAction> = (
         error: action.payload.error,
         err: action.err
       };
+    /* Get confirm report
+     ***********************************************/
     case ActionType.GET_CONFIRM_REPORT_START:
       return {
         ...state,
@@ -92,8 +102,8 @@ const reportReducer: Reducer<State, reportAction> = (
         viewConfirm: true,
         report: {
           ...state.report,
-          description: action.payload.result.description,
-          correspondence: action.payload.result.correspondence
+          descriptionHTML: action.payload.result.descriptionHTML,
+          correspondenceHTML: action.payload.result.correspondenceHTML
         }
       };
     case ActionType.GET_CONFIRM_REPORT_FAIL:
@@ -102,11 +112,15 @@ const reportReducer: Reducer<State, reportAction> = (
         error: action.payload.error,
         err: action.err
       };
+    /* Back to create
+     ***********************************************/
     case ActionType.BACK_TO_CREATE_REPORT:
       return {
         ...state,
         viewConfirm: action.viewConfirm
       };
+    /* Post report
+     ***********************************************/
     case ActionType.POST_REPORT_START:
       return {
         ...state
@@ -117,6 +131,24 @@ const reportReducer: Reducer<State, reportAction> = (
         report: action.payload.result
       };
     case ActionType.POST_REPORT_FAIL:
+      return {
+        ...state,
+        error: action.payload.error,
+        err: action.err
+      };
+    /* Post report
+     ***********************************************/
+    case ActionType.PUT_REPORT_START:
+      return {
+        ...state,
+        report: action.payload.param
+      };
+    case ActionType.PUT_REPORT_SUCCEED:
+      return {
+        ...state,
+        report: action.payload.result
+      };
+    case ActionType.PUT_REPORT_FAIL:
       return {
         ...state,
         error: action.payload.error,

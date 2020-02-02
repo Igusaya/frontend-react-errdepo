@@ -73,7 +73,6 @@ const SignIn: FC<InjectedFormikProps<SignInProps, SignInFormValue>> = props => {
       {/* Sign in button
        ***********************************************/}
       <Button
-        color="primary"
         variant="outlined"
         className={classes.link}
         onClick={handleSignInOpen}

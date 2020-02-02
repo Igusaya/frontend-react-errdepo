@@ -5,8 +5,9 @@ import ReplyIcon from '@material-ui/icons/Reply';
 import CreateIcon from '@material-ui/icons/Create';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Autocomplete } from '@material-ui/lab';
-import { GetConfirmParam, PostReportPram } from 'actions/report';
+import { GetConfirmParam, PostReportPram, PutReportPram } from 'actions/report';
 import { Report } from 'components/common/ReportComponent';
+import { useLocation, Link } from 'react-router-dom';
 
 /* Styles
  ***********************************************/
@@ -27,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     button: {
       marginTop: theme.spacing(2),
-      backgroundColor: '#7EC2C2'
+      marginLeft: theme.spacing(2)
     }
   })
 );
@@ -39,6 +40,7 @@ export interface MakeReportProps {
   //getFw: () => void;
   getConfirm: (getConfirmParam: GetConfirmParam) => void;
   postReport: (postReportParam: PostReportPram) => void;
+  putReport: (putReportParam: PutReportPram) => void;
   back: () => void;
   langArray?: string[];
   viewConfirm: boolean;
@@ -48,6 +50,9 @@ export interface MakeReportProps {
   errmsg?: string;
   description?: string;
   correspondence?: string;
+  descriptionHTML?: string;
+  correspondenceHTML?: string;
+  id?: number;
 }
 export interface MakeReportFormValue {
   inputLang: string;
@@ -77,6 +82,8 @@ const MakeReport: FC<InjectedFormikProps<
     props.getLang();
     // eslint-disable-next-line
   }, []);
+
+  const location = useLocation();
 
   const langAutocompleteProps = {
     options: props.langArray
@@ -214,8 +221,8 @@ const MakeReport: FC<InjectedFormikProps<
           fw={props.fw}
           env={props.env}
           errmsg={props.errmsg}
-          description={props.description}
-          correspondence={props.correspondence}
+          descriptionHTML={props.descriptionHTML}
+          correspondenceHTML={props.correspondenceHTML}
         />
         <Button
           variant="contained"
@@ -228,25 +235,53 @@ const MakeReport: FC<InjectedFormikProps<
         >
           戻る
         </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          className={classes.button}
-          startIcon={<CreateIcon />}
-          onClick={() => {
-            console.log('click create');
-            props.postReport({
-              lang: props.lang || '',
-              fw: props.fw || '',
-              env: props.env || '',
-              errmsg: props.errmsg || '',
-              description: props.description || '',
-              correspondence: props.correspondence || ''
-            });
-          }}
-        >
-          投稿
-        </Button>
+        {location.pathname === '/post_report' ? (
+          <Button
+            variant="contained"
+            color="primary"
+            className={classes.button}
+            startIcon={<CreateIcon />}
+            onClick={() => {
+              props.postReport({
+                lang: props.lang || '',
+                fw: props.fw || '',
+                env: props.env || '',
+                errmsg: props.errmsg || '',
+                description: props.description || '',
+                correspondence: props.correspondence || '',
+                descriptionHTML: props.descriptionHTML || '',
+                correspondenceHTML: props.correspondenceHTML || ''
+              });
+            }}
+          >
+            投稿
+          </Button>
+        ) : (
+          <Button
+            variant="contained"
+            color="primary"
+            className={classes.button}
+            startIcon={<CreateIcon />}
+            onClick={() => {
+              if (props.id === undefined) {
+                throw new Error('putReportのパラメーターが不正');
+              }
+              props.putReport({
+                id: props.id,
+                lang: props.lang || '',
+                fw: props.fw || '',
+                env: props.env || '',
+                errmsg: props.errmsg || '',
+                description: props.description || '',
+                correspondence: props.correspondence || '',
+                descriptionHTML: props.descriptionHTML || '',
+                correspondenceHTML: props.correspondenceHTML || ''
+              });
+            }}
+          >
+            編集
+          </Button>
+        )}
       </Paper>
     </>
   );

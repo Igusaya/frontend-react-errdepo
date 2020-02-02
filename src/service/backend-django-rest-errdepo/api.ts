@@ -247,8 +247,8 @@ export const getConfirmFactory = (optionConfig?: ApiConfig) => {
         lang: lang
       });
       return {
-        description: response.data.description,
-        correspondence: response.data.correspondence
+        descriptionHTML: response.data.description,
+        correspondenceHTML: response.data.correspondence
       };
     } catch (error) {
       throw new Error(
@@ -281,7 +281,9 @@ export const postReportFactory = (optionConfig?: ApiConfig) => {
     env: string = '',
     errmsg: string,
     description: string = '',
-    correspondence: string = ''
+    correspondence: string = '',
+    descriptionHTML: string = '',
+    correspondenceHTML: string = ''
   ) => {
     try {
       const response = await instance.post('report/', {
@@ -290,7 +292,9 @@ export const postReportFactory = (optionConfig?: ApiConfig) => {
         env: env,
         errmsg: errmsg,
         description: description,
-        correspondence: correspondence
+        correspondence: correspondence,
+        descriptionHTML: descriptionHTML,
+        correspondenceHTML: correspondenceHTML
       });
       const result: Report = response.data;
       const report = { ...result, modify: normalizationTime(result.modify) };
@@ -332,14 +336,14 @@ export const getReportListFactory = (optionConfig?: ApiConfig) => {
   return getReport;
 };
 
+/**
+ * Get {baseURL}/report/{reportId}
+ * @param optionConfig
+ */
 export const getReportDetailFactory = (optionConfig?: ApiConfig) => {
-  const token = localStorage.getItem('todolistsbackendkey');
   const config = {
     ...DEFAULT_API_CONFIG,
-    ...optionConfig,
-    headers: {
-      Authorization: 'Token ' + token
-    }
+    ...optionConfig
   };
   const instance = axios.create(config);
 
@@ -359,4 +363,48 @@ export const getReportDetailFactory = (optionConfig?: ApiConfig) => {
     }
   };
   return getReportDetail;
+};
+
+/**
+ * Put {baseURL}/report/{reportId}
+ * @param optionConfig
+ */
+export const putReportFactory = (optionConfig?: ApiConfig) => {
+  const token = localStorage.getItem('todolistsbackendkey');
+  const config = {
+    ...DEFAULT_API_CONFIG,
+    ...optionConfig,
+    headers: {
+      Authorization: 'Token ' + token
+    }
+  };
+  const instance = axios.create(config);
+
+  const putReport = async (report: {
+    id: number;
+    lang: string;
+    fw?: string;
+    env?: string;
+    errmsg?: string;
+    description?: string;
+    correspondence?: string;
+    descriptionHTML?: string;
+    correspondenceHTML?: string;
+  }) => {
+    try {
+      const response = await instance.put(`report/${report.id}/`, report);
+      const result: Report = response.data;
+      const resultReport = {
+        ...result,
+        modify: normalizationTime(result.modify)
+      };
+      return resultReport;
+    } catch (error) {
+      throw new Error(
+        'ただいま混み合っております。時間をおいて再度お試しください。 API status: ' +
+          error.response.status
+      );
+    }
+  };
+  return putReport;
 };

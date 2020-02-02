@@ -27,6 +27,8 @@ export interface Report {
   errmsg: string;
   description: string;
   correspondence: string;
+  descriptionHTML: string;
+  correspondenceHTML: string;
   owner_id: number;
   owner: string;
 }

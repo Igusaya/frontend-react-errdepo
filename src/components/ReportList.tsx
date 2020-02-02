@@ -80,7 +80,7 @@ const ReportList: FC<ReportListProps> = ({ getReports, reports }) => {
                 <Errmsg errmsg={report.errmsg} />
               </Grid>
               <Grid item>
-                <InnerHTML html={report.description} />
+                <InnerHTML html={report.descriptionHTML} />
               </Grid>
               <Grid item>
                 <div className={classes.center_button_area}>

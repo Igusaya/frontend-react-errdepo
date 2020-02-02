@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { withFormik } from 'formik';
 
-import postReport, {
+import MakeReport, {
   MakeReportProps,
   MakeReportFormValue
 } from 'components/MakeReport';
@@ -12,7 +12,9 @@ import {
   GetConfirmParam,
   backToReport,
   postReport as postReportAction,
-  PostReportPram
+  PostReportPram,
+  PutReportPram,
+  putReport
 } from 'actions/report';
 import { State } from 'reducers';
 
@@ -37,13 +39,14 @@ const Formik = withFormik<MakeReportProps, MakeReportFormValue>({
       correspondence: payload.inputCorrespondence
     });
   }
-})(postReport);
+})(MakeReport);
 
 interface DispatchProps {
   getLang: () => void;
   getConfirm: (getConfirmParam: GetConfirmParam) => void;
   back: () => void;
   postReport: (postReportParam: PostReportPram) => void;
+  putReport: (putReportParam: PutReportPram) => void;
 }
 
 const mapStateToProps = (state: State) => {
@@ -55,7 +58,10 @@ const mapStateToProps = (state: State) => {
     env: state.report.report?.env,
     errmsg: state.report.report?.errmsg,
     description: state.report.report?.description,
-    correspondence: state.report.report?.correspondence
+    correspondence: state.report.report?.correspondence,
+    descriptionHTML: state.report.report?.descriptionHTML,
+    correspondenceHTML: state.report.report?.correspondenceHTML,
+    id: state.report.reportId
   };
 };
 
@@ -66,7 +72,8 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     getConfirm: getConfirmParam =>
       dispatch(getConfirmReport.start(getConfirmParam)),
     postReport: postReportParam =>
-      dispatch(postReportAction.start(postReportParam))
+      dispatch(postReportAction.start(postReportParam)),
+    putReport: putReportParam => dispatch(putReport.start(putReportParam))
   };
 };
 

@@ -11,7 +11,8 @@ import {
   getConfirmFactory,
   postReportFactory,
   getReportListFactory,
-  getReportDetailFactory
+  getReportDetailFactory,
+  putReportFactory
 } from 'service/backend-django-rest-errdepo/api';
 import { getLang } from 'actions/report';
 import { indigo } from '@material-ui/core/colors';
@@ -292,8 +293,8 @@ describe('backend-django-rest-errdepo API handlers', () => {
         .reply(200, { description: 'test1', correspondence: 'test2' });
       const getConfirm = getConfirmFactory();
       const confirm = await getConfirm(description, correspondence);
-      expect(confirm.description).toBe('test1');
-      expect(confirm.correspondence).toBe('test2');
+      expect(confirm.descriptionHTML).toBe('test1');
+      expect(confirm.correspondenceHTML).toBe('test2');
     });
     it('should fail with 500', async () => {
       const description = 'testparam1';
@@ -319,6 +320,8 @@ describe('backend-django-rest-errdepo API handlers', () => {
       const errmsg = 'errmsg';
       const description = 'testparam1';
       const correspondence = 'testparam2';
+      const descriptionHTML = 'testparam1';
+      const correspondenceHTML = 'testparam2';
       mock
         .onPost('report/', {
           lang: lang,
@@ -326,7 +329,9 @@ describe('backend-django-rest-errdepo API handlers', () => {
           env: env,
           errmsg: errmsg,
           description: description,
-          correspondence: correspondence
+          correspondence: correspondence,
+          descriptionHTML: descriptionHTML,
+          correspondenceHTML: correspondenceHTML
         })
         .reply(200, {
           description: 'test1',
@@ -340,7 +345,9 @@ describe('backend-django-rest-errdepo API handlers', () => {
         env,
         errmsg,
         description,
-        correspondence
+        correspondence,
+        descriptionHTML,
+        correspondenceHTML
       );
       expect(confirm.description).toBe('test1');
       expect(confirm.correspondence).toBe('test2');
@@ -432,6 +439,73 @@ describe('backend-django-rest-errdepo API handlers', () => {
       try {
         const getReportDetail = getReportDetailFactory();
         await getReportDetail(1);
+      } catch (error) {
+        expect(error.message).toBe(
+          'ただいま混み合っております。時間をおいて再度お試しください。 API status: 500'
+        );
+      }
+    });
+  });
+
+  /* Get ReportDetail test
+   ***********************************************/
+  describe('Putting report', () => {
+    it('should succeed', async () => {
+      mock.onPut('report/1/').reply(200, {
+        id: 1,
+        created: '2020-01-31T12:48:02.209577+09:00',
+        modify: '2020-01-31T12:48:02.209629+09:00',
+        lang: 'updatePython',
+        fw: 'updateDjango-Rest',
+        env: 'dflksajflkasjfdlkasjflkdasjlkfjsdlkjfslkjflsa',
+        errmsg: 'dflksajflkasjfdlkasjflkdasjlkfjsdlkjfslkjflsa',
+        description: '<p>bbbbbbbbbbbbbbb</p>',
+        correspondence: '<p>fsdafdsafdsafda</p>',
+        owner_id: 26,
+        owner: 'たなか'
+      });
+
+      const putReport = putReportFactory();
+      const result = await putReport({
+        id: 1,
+        lang: 'Python',
+        fw: 'Django-Rest',
+        env: 'dflksajflkasjfdlkasjflkdasjlkfjsdlkjfslkjflsa',
+        errmsg: 'dflksajflkasjfdlkasjflkdasjlkfjsdlkjfslkjflsa',
+        description: 'bbbbbbbbbbbbbbb',
+        correspondence: 'fsdafdsafdsafda<',
+        descriptionHTML: '<p>bbbbbbbbbbbbbbb</p>',
+        correspondenceHTML: '<p>fsdafdsafdsafda</p>'
+      });
+      expect(result).toEqual({
+        id: 1,
+        created: '2020-01-31T12:48:02.209577+09:00',
+        modify: '2020-01-31 12:48:02',
+        lang: 'updatePython',
+        fw: 'updateDjango-Rest',
+        env: 'dflksajflkasjfdlkasjflkdasjlkfjsdlkjfslkjflsa',
+        errmsg: 'dflksajflkasjfdlkasjflkdasjlkfjsdlkjfslkjflsa',
+        description: '<p>bbbbbbbbbbbbbbb</p>',
+        correspondence: '<p>fsdafdsafdsafda</p>',
+        owner_id: 26,
+        owner: 'たなか'
+      });
+    });
+    it('should fail with 500', async () => {
+      mock.onPut('report/1/').reply(500);
+      try {
+        const putReport = putReportFactory();
+        await putReport({
+          id: 1,
+          lang: 'Python',
+          fw: 'Django-Rest',
+          env: 'dflksajflkasjfdlkasjflkdasjlkfjsdlkjfslkjflsa',
+          errmsg: 'dflksajflkasjfdlkasjflkdasjlkfjsdlkjfslkjflsa',
+          description: 'bbbbbbbbbbbbbbb',
+          correspondence: 'fsdafdsafdsafda<',
+          descriptionHTML: '<p>bbbbbbbbbbbbbbb</p>',
+          correspondenceHTML: '<p>fsdafdsafdsafda</p>'
+        });
       } catch (error) {
         expect(error.message).toBe(
           'ただいま混み合っております。時間をおいて再度お試しください。 API status: 500'

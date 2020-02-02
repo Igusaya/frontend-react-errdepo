@@ -4,14 +4,16 @@ import {
   watchGetLang,
   watchPostReport,
   watchGetConfirm,
-  watchGetReportDetail
+  watchGetReportDetail,
+  watchPutReport
 } from '../report';
 import reportReducer, { initialState } from '../../reducers/report';
 import {
   getLang,
   postReport,
   getConfirmReport,
-  getReportDetail
+  getReportDetail,
+  putReport
 } from '../../actions/report';
 
 /* Test
@@ -59,11 +61,13 @@ describe('user saga', () => {
       env: 'os: version: library: etc...',
       errmsg: 'fdsfsd',
       description: 'dfs',
-      correspondence: 'fdsfs'
+      correspondence: 'fdsfs',
+      descriptionHTML: 'testparam1',
+      correspondenceHTML: 'testparam2'
     };
     const getConfirmResult = {
-      description: 'dfstt',
-      correspondence: 'fdsfstt'
+      descriptionHTML: 'resultdfstt',
+      correspondenceHTML: 'resuletfdsfstt'
     };
     handlerMock.mockReturnValue(() => getConfirmResult);
     return expectSaga(watchGetConfirm, handlerMock)
@@ -113,7 +117,9 @@ describe('user saga', () => {
       env: 'os: mac\nfront end: React',
       errmsg: "NameError: name 'true' is not defined",
       description: '<p>trueなんて変数ないよ</p>',
-      correspondence: 'correspondenceTest'
+      correspondence: 'correspondenceTest',
+      descriptionHTML: 'testparam1',
+      correspondenceHTML: 'testparam2'
     };
     const postReportResult = {
       ...postReportParam,
@@ -139,7 +145,9 @@ describe('user saga', () => {
       env: 'os: mac\nfront end: React',
       errmsg: "NameError: name 'true' is not defined",
       description: '<p>trueなんて変数ないよ</p>',
-      correspondence: 'correspondenceTest'
+      correspondence: 'correspondenceTest',
+      descriptionHTML: 'testparam1',
+      correspondenceHTML: 'testparam2'
     };
     handlerMock.mockReturnValue(() => {
       throw new Error('err');
@@ -163,6 +171,8 @@ describe('user saga', () => {
       errmsg: 'dflksajflkasjfdlkasjflkdasjlkfjsdlkjfslkjflsa',
       description: '<p>bbbbbbbbbbbbbbb</p>',
       correspondence: '<p>fsdafdsafdsafda</p>',
+      descriptionHTML: 'testparam1',
+      correspondenceHTML: 'testparam2',
       owner_id: 26,
       owner: 'たなか'
     };
@@ -180,19 +190,6 @@ describe('user saga', () => {
   });
 
   it('should get report detail 500 failed', async () => {
-    const getReportDetailResult = {
-      id: 1,
-      created: '2020-01-31T12:48:02.209577+09:00',
-      modify: '2020-01-31 12:48:02',
-      lang: 'Python',
-      fw: 'Django-Rest',
-      env: 'dflksajflkasjfdlkasjflkdasjlkfjsdlkjfslkjflsa',
-      errmsg: 'dflksajflkasjfdlkasjflkdasjlkfjsdlkjfslkjflsa',
-      description: '<p>bbbbbbbbbbbbbbb</p>',
-      correspondence: '<p>fsdafdsafdsafda</p>',
-      owner_id: 26,
-      owner: 'たなか'
-    };
     handlerMock.mockReturnValue(() => {
       throw new Error('err');
     });
@@ -203,6 +200,74 @@ describe('user saga', () => {
       .hasFinalState({
         ...initialState,
         reportId: 1,
+        error: 'err',
+        err: true
+      })
+      .silentRun(1);
+  });
+
+  it('should put report succeeded', async () => {
+    const putReportResult = {
+      id: 1,
+      created: '2020-01-31T12:48:02.209577+09:00',
+      modify: '2020-01-31 12:48:02',
+      lang: 'Python',
+      fw: 'Django-Rest',
+      env: 'dflksajflkasjfdlkasjflkdasjlkfjsdlkjfslkjflsa',
+      errmsg: 'dflksajflkasjfdlkasjflkdasjlkfjsdlkjfslkjflsa',
+      description: '<p>bbbbbbbbbbbbbbb</p>',
+      correspondence: '<p>fsdafdsafdsafda</p>',
+      descriptionHTML: 'testparam1',
+      correspondenceHTML: 'testparam2',
+      owner_id: 26,
+      owner: 'たなか'
+    };
+    handlerMock.mockReturnValue(() => putReportResult);
+    return expectSaga(watchPutReport, handlerMock)
+      .dispatch(
+        putReport.start({
+          id: 1,
+          lang: 'Python',
+          fw: 'Django-Rest',
+          env: 'dflksajflkasjfdlkasjflkdasjlkfjsdlkjfslkjflsa',
+          errmsg: 'dflksajflkasjfdlkasjflkdasjlkfjsdlkjfslkjflsa',
+          description: '<p>bbbbbbbbbbbbbbb</p>',
+          correspondence: '<p>fsdafdsafdsafda</p>',
+          descriptionHTML: 'testparam1',
+          correspondenceHTML: 'testparam2'
+        })
+      )
+      .put(putReport.succeed(putReportResult))
+      .withReducer(reportReducer)
+      .hasFinalState({
+        ...initialState,
+        report: { ...putReportResult }
+      })
+      .silentRun(1);
+  });
+
+  it('should put report 500 failed', async () => {
+    handlerMock.mockReturnValue(() => {
+      throw new Error('err');
+    });
+    const param = {
+      id: 1,
+      lang: 'Python',
+      fw: 'Django-Rest',
+      env: 'dflksajflkasjfdlkasjflkdasjlkfjsdlkjfslkjflsa',
+      errmsg: 'dflksajflkasjfdlkasjflkdasjlkfjsdlkjfslkjflsa',
+      description: '<p>bbbbbbbbbbbbbbb</p>',
+      correspondence: '<p>fsdafdsafdsafda</p>',
+      descriptionHTML: 'testparam1',
+      correspondenceHTML: 'testparam2'
+    };
+    return expectSaga(watchPutReport, handlerMock)
+      .dispatch(putReport.start(param))
+      .put(putReport.fail('err'))
+      .withReducer(reportReducer)
+      .hasFinalState({
+        ...initialState,
+        report: { ...param },
         error: 'err',
         err: true
       })

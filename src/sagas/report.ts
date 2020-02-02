@@ -5,13 +5,15 @@ import {
   ActionType,
   getConfirmReport,
   postReport,
-  getReportDetail
+  getReportDetail,
+  putReport
 } from 'actions/report';
 import {
   getLangFactory,
   getConfirmFactory,
   postReportFactory,
-  getReportDetailFactory
+  getReportDetailFactory,
+  putReportFactory
 } from 'service/backend-django-rest-errdepo/api';
 
 function* runGetLang(
@@ -41,8 +43,8 @@ function* runGetConfirm(
     );
     yield put(
       getConfirmReport.succeed({
-        description: confirmColumn.description,
-        correspondence: confirmColumn.correspondence
+        descriptionHTML: confirmColumn.descriptionHTML,
+        correspondenceHTML: confirmColumn.correspondenceHTML
       })
     );
   } catch (error) {
@@ -63,7 +65,9 @@ function* runPostReport(
       action.payload.param.env,
       action.payload.param.errmsg,
       action.payload.param.description,
-      action.payload.param.correspondence
+      action.payload.param.correspondence,
+      action.payload.param.descriptionHTML,
+      action.payload.param.correspondenceHTML
     );
     yield put(postReport.succeed(report));
   } catch (error) {
@@ -81,6 +85,19 @@ function* runGetReportDetail(
     yield put(getReportDetail.succeed(report));
   } catch (error) {
     yield put(getReportDetail.fail(error.message));
+  }
+}
+
+function* runPutReport(
+  handler: typeof putReportFactory,
+  action: ReturnType<typeof putReport.start>
+) {
+  try {
+    const api = handler();
+    const report = yield call(api, action.payload.param);
+    yield put(putReport.succeed(report));
+  } catch (error) {
+    yield put(putReport.fail(error.message));
   }
 }
 
@@ -102,4 +119,8 @@ export function* watchGetReportDetail(handler: typeof getReportDetailFactory) {
     runGetReportDetail,
     handler
   );
+}
+
+export function* watchPutReport(handler: typeof putReportFactory) {
+  yield takeLatest(ActionType.PUT_REPORT_START, runPutReport, handler);
 }

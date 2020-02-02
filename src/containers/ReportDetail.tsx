@@ -20,7 +20,7 @@ const mapStateToProps = (state: State) => {
     stateReport = state.report.report;
   }
 
-  // reportListがからの場合、componentでapiを叩く
+  // reportListが空の場合、componentでapiを叩く
   const id = state.reportList.reportList.count > 0 ? 0 : -1;
 
   return {
@@ -35,9 +35,14 @@ const mapStateToProps = (state: State) => {
       description: report?.description || stateReport?.description || '',
       correspondence:
         report?.correspondence || stateReport?.correspondence || '',
+      descriptionHTML:
+        report?.descriptionHTML || stateReport?.descriptionHTML || '',
+      correspondenceHTML:
+        report?.correspondenceHTML || stateReport?.correspondenceHTML || '',
       owner_id: report?.owner_id || stateReport?.owner_id || 0,
       owner: report?.owner || stateReport?.owner || ''
-    }
+    },
+    user_id: state.user.userMenu.profile?.user_id || 0
   };
 };
 
