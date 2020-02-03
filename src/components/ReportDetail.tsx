@@ -40,11 +40,14 @@ const ReportDetail: FC<ReportProps> = ({
   user_id
 }) => {
   const { reportId } = useParams();
-  useEffect(() => {
-    selectReport(Number(reportId));
 
+  useEffect(() => {
+    // スクロール位置調整
+    window.scroll(0, 0);
+
+    // レポート詳細情報取得判定
+    selectReport(Number(reportId));
     if (report.id === -1) {
-      console.log('get report api');
       getReport(Number(reportId));
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps

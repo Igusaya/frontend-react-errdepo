@@ -59,6 +59,10 @@ export interface ReportListProps {
  ***********************************************/
 const ReportList: FC<ReportListProps> = ({ getReports, reports }) => {
   useEffect(() => {
+    // スクロール位置調整
+    window.scroll(0, 0);
+
+    // レポートリストの取得
     getReports();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const classes = useStyles();
