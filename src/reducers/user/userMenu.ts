@@ -62,6 +62,10 @@ const userMenuReducer: Reducer<State, Action> = (
         ...state,
         error: action.payload.error
       };
+    case ActionType.ERASE_REPORT_DETAIL:
+      return {
+        ...state
+      };
     default: {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const _: never = action;

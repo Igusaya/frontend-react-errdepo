@@ -10,7 +10,8 @@ import {
   signOut,
   getProfile,
   putProfile,
-  PutProfileParams
+  PutProfileParams,
+  eraseReportDetail
 } from 'actions/userMenu';
 import { State } from 'reducers';
 
@@ -36,6 +37,7 @@ interface DispatchProps {
   signOut: () => void;
   getProfile: () => void;
   putProfile: (param: PutProfileParams) => void;
+  eraseReportDetail: () => void;
 }
 
 const mapStateToProps = (state: State) => {
@@ -49,7 +51,8 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
   return {
     signOut: () => dispatch(signOut.start()),
     getProfile: () => dispatch(getProfile.start()),
-    putProfile: param => dispatch(putProfile.start(param))
+    putProfile: param => dispatch(putProfile.start(param)),
+    eraseReportDetail: () => dispatch(eraseReportDetail())
   };
 };
 

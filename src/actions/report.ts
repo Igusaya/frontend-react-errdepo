@@ -1,4 +1,4 @@
-import { Report } from 'service/backend-django-rest-errdepo/model';
+import { Report, FwSet } from 'service/backend-django-rest-errdepo/model';
 
 /* Constants
  ***********************************************/
@@ -19,7 +19,6 @@ export enum ActionType {
   POST_REPORT_START = 'POST_REPORT_START',
   POST_REPORT_SUCCEED = 'POST_REPORT_SUCCEED',
   POST_REPORT_FAIL = 'POST_REPORT_FAIL',
-  BACK_TO_CREATE_REPORT = 'BACK_TO_CREATE_REPORT',
   PUT_REPORT_START = 'PUT_REPORT_START',
   PUT_REPORT_SUCCEED = 'PUT_REPORT_SUCCEED',
   PUT_REPORT_FAIL = 'PUT_REPORT_FAIL'
@@ -87,13 +86,13 @@ export const getLang = {
   })
 };
 
-export const getFw = {
+export const getFwList = {
   start: (param: string) => ({
     type: ActionType.GET_FW_START as typeof ActionType.GET_FW_START,
     payload: { param }
   }),
 
-  succeed: (result: string[]) => ({
+  succeed: (result: FwSet[]) => ({
     type: ActionType.GET_FW_SUCCEED as typeof ActionType.GET_FW_SUCCEED,
     payload: { result }
   }),
@@ -141,13 +140,6 @@ export const postReport = {
   })
 };
 
-export const backToReport = {
-  action: () => ({
-    type: ActionType.BACK_TO_CREATE_REPORT as typeof ActionType.BACK_TO_CREATE_REPORT,
-    viewConfirm: false
-  })
-};
-
 export const putReport = {
   start: (param: PutReportPram) => ({
     type: ActionType.PUT_REPORT_START as typeof ActionType.PUT_REPORT_START,
@@ -174,16 +166,15 @@ export type reportAction =
   | ReturnType<typeof getLang.start>
   | ReturnType<typeof getLang.succeed>
   | ReturnType<typeof getLang.fail>
-  | ReturnType<typeof getFw.start>
-  | ReturnType<typeof getFw.succeed>
-  | ReturnType<typeof getFw.fail>
+  | ReturnType<typeof getFwList.start>
+  | ReturnType<typeof getFwList.succeed>
+  | ReturnType<typeof getFwList.fail>
   | ReturnType<typeof getConfirmReport.start>
   | ReturnType<typeof getConfirmReport.succeed>
   | ReturnType<typeof getConfirmReport.fail>
   | ReturnType<typeof postReport.start>
   | ReturnType<typeof postReport.succeed>
   | ReturnType<typeof postReport.fail>
-  | ReturnType<typeof backToReport.action>
   | ReturnType<typeof putReport.start>
   | ReturnType<typeof putReport.succeed>
   | ReturnType<typeof putReport.fail>;

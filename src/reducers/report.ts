@@ -1,6 +1,7 @@
 import { Reducer } from 'redux';
 
 import { ActionType, reportAction } from 'actions/report';
+import { FwSet } from 'service/backend-django-rest-errdepo/model';
 
 export interface ReportState {
   id?: number;
@@ -21,14 +22,15 @@ export interface ReportState {
 export interface State {
   reportId?: number;
   report?: ReportState;
-  viewConfirm: boolean;
   lang?: string[];
+  fw?: FwSet[];
   error?: string | null;
   err?: boolean | null;
+  isFwLoading: boolean;
 }
 
 export const initialState: State = {
-  viewConfirm: false
+  isFwLoading: false
 };
 
 export type Action = reportAction;
@@ -82,6 +84,26 @@ const reportReducer: Reducer<State, reportAction> = (
         error: action.payload.error,
         err: action.err
       };
+    /* Get fw
+     ***********************************************/
+    case ActionType.GET_FW_START:
+      return {
+        ...state,
+        isFwLoading: true
+      };
+    case ActionType.GET_FW_SUCCEED:
+      return {
+        ...state,
+        fw: action.payload.result,
+        isFwLoading: false
+      };
+    case ActionType.GET_FW_FAIL:
+      return {
+        ...state,
+        error: action.payload.error,
+        err: action.err,
+        isFwLoading: false
+      };
     /* Get confirm report
      ***********************************************/
     case ActionType.GET_CONFIRM_REPORT_START:
@@ -99,7 +121,6 @@ const reportReducer: Reducer<State, reportAction> = (
     case ActionType.GET_CONFIRM_REPORT_SUCCEED:
       return {
         ...state,
-        viewConfirm: true,
         report: {
           ...state.report,
           descriptionHTML: action.payload.result.descriptionHTML,
@@ -111,13 +132,6 @@ const reportReducer: Reducer<State, reportAction> = (
         ...state,
         error: action.payload.error,
         err: action.err
-      };
-    /* Back to create
-     ***********************************************/
-    case ActionType.BACK_TO_CREATE_REPORT:
-      return {
-        ...state,
-        viewConfirm: action.viewConfirm
       };
     /* Post report
      ***********************************************/

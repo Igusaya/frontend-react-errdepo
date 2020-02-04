@@ -113,6 +113,13 @@ const App: React.FC<AppProps> = ({
                 <Redirect to={{ pathname: '/' }} />
               )}
             </Route>
+            <Route path="/report/detail">
+              {hasReportId ? (
+                <ReportDetail />
+              ) : (
+                <Redirect to={{ pathname: '/' }} />
+              )}
+            </Route>
             <Route path="/report/:reportId">
               <ReportDetail />
             </Route>

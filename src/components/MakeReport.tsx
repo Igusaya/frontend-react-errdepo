@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { InjectedFormikProps } from 'formik';
 import { Paper, TextField, Button } from '@material-ui/core';
 import ReplyIcon from '@material-ui/icons/Reply';
@@ -8,6 +8,7 @@ import { Autocomplete } from '@material-ui/lab';
 import { GetConfirmParam, PostReportPram, PutReportPram } from 'actions/report';
 import { Report } from 'components/common/ReportComponent';
 import { useLocation, Link } from 'react-router-dom';
+import { FwSet } from 'service/backend-django-rest-errdepo/model';
 
 /* Styles
  ***********************************************/
@@ -37,13 +38,12 @@ const useStyles = makeStyles((theme: Theme) =>
  ***********************************************/
 export interface MakeReportProps {
   getLang: () => void;
-  //getFw: () => void;
+  getFw: (lang: string) => void;
   getConfirm: (getConfirmParam: GetConfirmParam) => void;
   postReport: (postReportParam: PostReportPram) => void;
   putReport: (putReportParam: PutReportPram) => void;
-  back: () => void;
   langArray?: string[];
-  viewConfirm: boolean;
+  fwArray?: FwSet[];
   lang?: string;
   fw?: string;
   env?: string;
@@ -53,6 +53,7 @@ export interface MakeReportProps {
   descriptionHTML?: string;
   correspondenceHTML?: string;
   id?: number;
+  isFwLoading: boolean;
 }
 export interface MakeReportFormValue {
   inputLang: string;
@@ -76,14 +77,18 @@ const MakeReport: FC<InjectedFormikProps<
   MakeReportProps,
   MakeReportFormValue
 >> = props => {
+  const [viewConfirm, setViewConfirm] = useState(false);
+  const [disableFw, setDisableFw] = useState(true);
   const classes = useStyles();
+  const location = useLocation();
 
   useEffect(() => {
-    props.getLang();
-    // eslint-disable-next-line
-  }, []);
+    // スクロール位置調整
+    window.scroll(0, 0);
 
-  const location = useLocation();
+    // 言語セレクトオプション取得
+    props.getLang();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const langAutocompleteProps = {
     options: props.langArray
@@ -91,32 +96,63 @@ const MakeReport: FC<InjectedFormikProps<
           return { langName: str };
         })
       : [],
-    getOptionLabel: (option: LangOptionType) => option.langName
+    getOptionLabel: (option: LangOptionType | string) => {
+      return typeof option === 'string' ? option : option.langName;
+    }
   };
-
   const fwAutocompleteProps = {
-    options: [],
+    options: props.fwArray
+      ? props.fwArray.map(elm => {
+          return { fwName: elm.fw };
+        })
+      : [],
     getOptionLabel: (option: FwOptionType) => option.fwName
   };
 
-  return !props.viewConfirm ? (
+  // 確認画面への遷移制御用
+  let hasError =
+    props.errors.inputLang || props.errors.inputFw || props.errors.inputErrmsg
+      ? true
+      : false;
+  let isTouched =
+    props.touched.inputLang ||
+    props.touched.inputFw ||
+    props.touched.inputErrmsg
+      ? true
+      : false;
+
+  const handleFwDesable = (inputVal: string) => {
+    setDisableFw(inputVal === '' ? true : false);
+  };
+
+  return !viewConfirm ? (
     <>
       {/* input Report
        ***********************************************/}
       <Paper className={classes.paper}>
-        <form className={classes.root} onSubmit={props.handleSubmit}>
+        <form
+          className={classes.root}
+          onSubmit={e => {
+            props.handleSubmit(e);
+            setViewConfirm(!hasError && isTouched);
+            window.scroll(0, 0);
+          }}
+        >
           <Autocomplete
             className={classes.selecter}
             {...langAutocompleteProps}
             id="inputLangSelect"
             data-testid="inputLangSelect"
+            noOptionsText="候補はありません"
             inputValue={props.values.inputLang}
+            disableClearable
             onChange={(
               // onChangeでrenderInputのTextFieldに値を渡す
               event: React.ChangeEvent<{}>,
               value: { langName: string } | null
             ) => {
               props.setFieldValue('inputLang', value?.langName);
+              handleFwDesable(value?.langName || '');
             }}
             renderInput={params => (
               <TextField
@@ -127,7 +163,21 @@ const MakeReport: FC<InjectedFormikProps<
                 label="言語"
                 margin="normal"
                 fullWidth
-                onChange={props.handleChange}
+                // freeSoloで全角入れるとバグるのでvalue追加で対応
+                value={props.values.inputLang}
+                onChange={e => {
+                  props.handleChange(e);
+                  handleFwDesable(e.target.value);
+                }}
+                onBlur={() => {
+                  props.getFw(props.values.inputLang);
+                }}
+                helperText={props.touched.inputLang && props.errors.inputLang}
+                error={
+                  props.touched.inputLang && props.errors.inputLang
+                    ? true
+                    : false
+                }
               />
             )}
           />
@@ -136,8 +186,11 @@ const MakeReport: FC<InjectedFormikProps<
             {...fwAutocompleteProps}
             id="inputFwSelect"
             data-testid="inputFwSelect"
-            freeSolo
+            noOptionsText="候補はありません"
             inputValue={props.values.inputFw}
+            disableClearable
+            disabled={disableFw}
+            loading={props.isFwLoading}
             onChange={(
               event: React.ChangeEvent<{}>,
               value: FwOptionType | null
@@ -153,7 +206,13 @@ const MakeReport: FC<InjectedFormikProps<
                 label="FW・library 等"
                 margin="normal"
                 fullWidth
+                // freeSoloで全角入れるとバグるのでvalue追加で対応
+                value={props.values.inputLang}
                 onChange={props.handleChange}
+                helperText={props.touched.inputFw && props.errors.inputFw}
+                error={
+                  props.touched.inputFw && props.errors.inputFw ? true : false
+                }
               />
             )}
           />
@@ -177,6 +236,13 @@ const MakeReport: FC<InjectedFormikProps<
             data-testid="inputErrmsg"
             value={props.values.inputErrmsg}
             onChange={props.handleChange}
+            onBlur={props.handleBlur}
+            helperText={props.touched.inputErrmsg && props.errors.inputErrmsg}
+            error={
+              props.touched.inputErrmsg && props.errors.inputErrmsg
+                ? true
+                : false
+            }
           />
           <TextField
             id="inputDescription"
@@ -187,6 +253,7 @@ const MakeReport: FC<InjectedFormikProps<
             data-testid="inputDescription"
             value={props.values.inputDescription}
             onChange={props.handleChange}
+            onBlur={props.handleBlur}
           />
           <TextField
             id="inputCorrespondence"
@@ -230,57 +297,62 @@ const MakeReport: FC<InjectedFormikProps<
           className={classes.button}
           startIcon={<ReplyIcon />}
           onClick={() => {
-            props.back();
+            setViewConfirm(false);
+            window.scroll(0, 0);
           }}
         >
           戻る
         </Button>
         {location.pathname === '/post_report' ? (
-          <Button
-            variant="contained"
-            color="primary"
-            className={classes.button}
-            startIcon={<CreateIcon />}
-            onClick={() => {
-              props.postReport({
-                lang: props.lang || '',
-                fw: props.fw || '',
-                env: props.env || '',
-                errmsg: props.errmsg || '',
-                description: props.description || '',
-                correspondence: props.correspondence || '',
-                descriptionHTML: props.descriptionHTML || '',
-                correspondenceHTML: props.correspondenceHTML || ''
-              });
-            }}
-          >
-            投稿
-          </Button>
+          <Link to="/report/detail">
+            <Button
+              variant="contained"
+              color="primary"
+              className={classes.button}
+              startIcon={<CreateIcon />}
+              onClick={() => {
+                props.postReport({
+                  lang: props.lang || '',
+                  fw: props.fw || '',
+                  env: props.env || '',
+                  errmsg: props.errmsg || '',
+                  description: props.description || '',
+                  correspondence: props.correspondence || '',
+                  descriptionHTML: props.descriptionHTML || '',
+                  correspondenceHTML: props.correspondenceHTML || ''
+                });
+              }}
+            >
+              投稿
+            </Button>
+          </Link>
         ) : (
-          <Button
-            variant="contained"
-            color="primary"
-            className={classes.button}
-            startIcon={<CreateIcon />}
-            onClick={() => {
-              if (props.id === undefined) {
-                throw new Error('putReportのパラメーターが不正');
-              }
-              props.putReport({
-                id: props.id,
-                lang: props.lang || '',
-                fw: props.fw || '',
-                env: props.env || '',
-                errmsg: props.errmsg || '',
-                description: props.description || '',
-                correspondence: props.correspondence || '',
-                descriptionHTML: props.descriptionHTML || '',
-                correspondenceHTML: props.correspondenceHTML || ''
-              });
-            }}
-          >
-            編集
-          </Button>
+          <Link to={'/report/' + props.id}>
+            <Button
+              variant="contained"
+              color="primary"
+              className={classes.button}
+              startIcon={<CreateIcon />}
+              onClick={() => {
+                if (props.id === undefined) {
+                  throw new Error('putReportのパラメーターが不正');
+                }
+                props.putReport({
+                  id: props.id,
+                  lang: props.lang || '',
+                  fw: props.fw || '',
+                  env: props.env || '',
+                  errmsg: props.errmsg || '',
+                  description: props.description || '',
+                  correspondence: props.correspondence || '',
+                  descriptionHTML: props.descriptionHTML || '',
+                  correspondenceHTML: props.correspondenceHTML || ''
+                });
+              }}
+            >
+              編集
+            </Button>
+          </Link>
         )}
       </Paper>
     </>

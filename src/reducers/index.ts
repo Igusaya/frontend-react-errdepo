@@ -15,6 +15,7 @@ import user, {
   initialState as userInitialState
 } from 'reducers/user';
 import { ActionType as ReportActionType } from 'actions/report';
+import { ActionType as UserMenuActionType } from 'actions/userMenu';
 
 type Action = UserAction | ReportAction;
 
@@ -49,6 +50,14 @@ const crossSliceReducer: Reducer<State, Action> = (
         report: {
           ...state.report,
           report: reportDetail
+        }
+      };
+    case UserMenuActionType.ERASE_REPORT_DETAIL:
+      return {
+        ...state,
+        report: {
+          ...state.report,
+          report: {}
         }
       };
     default:

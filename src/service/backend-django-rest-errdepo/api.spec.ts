@@ -12,7 +12,8 @@ import {
   postReportFactory,
   getReportListFactory,
   getReportDetailFactory,
-  putReportFactory
+  putReportFactory,
+  getFwListFactory
 } from 'service/backend-django-rest-errdepo/api';
 import { getLang } from 'actions/report';
 import { indigo } from '@material-ui/core/colors';
@@ -506,6 +507,34 @@ describe('backend-django-rest-errdepo API handlers', () => {
           descriptionHTML: '<p>bbbbbbbbbbbbbbb</p>',
           correspondenceHTML: '<p>fsdafdsafdsafda</p>'
         });
+      } catch (error) {
+        expect(error.message).toBe(
+          'ただいま混み合っております。時間をおいて再度お試しください。 API status: 500'
+        );
+      }
+    });
+  });
+
+  /* Get fwList test
+   ***********************************************/
+  describe('Getting fwList', () => {
+    it('should succeed', async () => {
+      mock.onPost('fw/', { lang: 'Java' }).reply(200, [
+        { lang: 'Java', fw: 'play' },
+        { lang: 'Java', fw: 'EE7' }
+      ]);
+      const getFwList = getFwListFactory();
+      const result = await getFwList('Java');
+      expect(result).toEqual([
+        { lang: 'Java', fw: 'play' },
+        { lang: 'Java', fw: 'EE7' }
+      ]);
+    });
+    it('should fail with 500', async () => {
+      mock.onPost('fw/', { lang: 'Java' }).reply(500);
+      try {
+        const getFwList = getFwListFactory();
+        await getFwList('Java');
       } catch (error) {
         expect(error.message).toBe(
           'ただいま混み合っております。時間をおいて再度お試しください。 API status: 500'

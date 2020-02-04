@@ -28,7 +28,7 @@ import NavigationIcon from '@material-ui/icons/Navigation';
 
 import { Profile } from 'service/backend-django-rest-errdepo/model';
 import { PutProfileParams } from 'actions/userMenu';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 /* Styles
  ***********************************************/
@@ -128,6 +128,7 @@ export interface UserMenuProps {
   signOut: () => void;
   getProfile: () => void;
   putProfile: (params: PutProfileParams) => void;
+  eraseReportDetail: () => void;
   profile?: Profile;
 }
 
@@ -224,6 +225,7 @@ const UserMenu: FC<InjectedFormikProps<
     // eslint-disable-next-line
   }, [props.profile]);
 
+  let location = useLocation();
   /* Return
    ***********************************************/
   return (
@@ -246,8 +248,18 @@ const UserMenu: FC<InjectedFormikProps<
         onClose={handleClose}
         className={classes.noline}
       >
-        <Link to="/post_report">
-          <StyledMenuItem onClick={handleClose}>
+        <Link
+          to={{
+            pathname: '/post_report',
+            state: { referre: location.pathname }
+          }}
+        >
+          <StyledMenuItem
+            onClick={e => {
+              handleClose();
+              props.eraseReportDetail();
+            }}
+          >
             <ListItemIcon>
               <NoteAddIcon fontSize="small" />
             </ListItemIcon>

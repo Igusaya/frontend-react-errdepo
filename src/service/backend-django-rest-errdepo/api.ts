@@ -408,3 +408,24 @@ export const putReportFactory = (optionConfig?: ApiConfig) => {
   };
   return putReport;
 };
+
+export const getFwListFactory = (optionConfig?: ApiConfig) => {
+  const config = {
+    ...DEFAULT_API_CONFIG,
+    ...optionConfig
+  };
+  const instance = axios.create(config);
+
+  const getFwList = async (lang: string) => {
+    try {
+      const response = await instance.post('fw/', { lang: lang });
+      return response.data;
+    } catch (error) {
+      throw new Error(
+        'ただいま混み合っております。時間をおいて再度お試しください。 API status: ' +
+          error.response.status
+      );
+    }
+  };
+  return getFwList;
+};

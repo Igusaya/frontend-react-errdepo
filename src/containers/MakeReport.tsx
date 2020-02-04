@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { withFormik } from 'formik';
+import * as yup from 'yup';
 
 import MakeReport, {
   MakeReportProps,
@@ -10,11 +11,11 @@ import {
   getLang,
   getConfirmReport,
   GetConfirmParam,
-  backToReport,
   postReport as postReportAction,
   PostReportPram,
   PutReportPram,
-  putReport
+  putReport,
+  getFwList
 } from 'actions/report';
 import { State } from 'reducers';
 
@@ -38,13 +39,27 @@ const Formik = withFormik<MakeReportProps, MakeReportFormValue>({
       description: payload.inputDescription,
       correspondence: payload.inputCorrespondence
     });
-  }
+  },
+  validationSchema: yup.object().shape({
+    inputLang: yup
+      .string()
+      .max(100, '言語は100文字以内で入力してください')
+      .required('言語は必須です'),
+    inputFw: yup
+      .string()
+      .max(100, 'Fw・library等は100文字以内で入力してください'),
+    inputErrmsg: yup
+      .string()
+      .required(
+        'エラーメッセージは必須です。特に記載内容がなければエラー概要でも載せてください。'
+      )
+  })
 })(MakeReport);
 
 interface DispatchProps {
   getLang: () => void;
+  getFw: (lang: string) => void;
   getConfirm: (getConfirmParam: GetConfirmParam) => void;
-  back: () => void;
   postReport: (postReportParam: PostReportPram) => void;
   putReport: (putReportParam: PutReportPram) => void;
 }
@@ -52,7 +67,7 @@ interface DispatchProps {
 const mapStateToProps = (state: State) => {
   return {
     langArray: state.report.lang,
-    viewConfirm: state.report.viewConfirm,
+    fwArray: state.report.fw,
     lang: state.report.report?.lang,
     fw: state.report.report?.fw,
     env: state.report.report?.env,
@@ -61,14 +76,15 @@ const mapStateToProps = (state: State) => {
     correspondence: state.report.report?.correspondence,
     descriptionHTML: state.report.report?.descriptionHTML,
     correspondenceHTML: state.report.report?.correspondenceHTML,
-    id: state.report.reportId
+    id: state.report.reportId,
+    isFwLoading: state.report.isFwLoading
   };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
   return {
     getLang: () => dispatch(getLang.start()),
-    back: () => dispatch(backToReport.action()),
+    getFw: (lang: string) => dispatch(getFwList.start(lang)),
     getConfirm: getConfirmParam =>
       dispatch(getConfirmReport.start(getConfirmParam)),
     postReport: postReportParam =>

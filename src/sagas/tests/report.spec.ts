@@ -5,7 +5,8 @@ import {
   watchPostReport,
   watchGetConfirm,
   watchGetReportDetail,
-  watchPutReport
+  watchPutReport,
+  watchGetFwList
 } from '../report';
 import reportReducer, { initialState } from '../../reducers/report';
 import {
@@ -13,12 +14,13 @@ import {
   postReport,
   getConfirmReport,
   getReportDetail,
-  putReport
+  putReport,
+  getFwList
 } from '../../actions/report';
 
 /* Test
  ***********************************************/
-describe('user saga', () => {
+describe('report saga', () => {
   const handlerMock = jest.fn();
 
   it('should get lang succeeded', async () => {
@@ -76,8 +78,7 @@ describe('user saga', () => {
       .withReducer(reportReducer)
       .hasFinalState({
         ...initialState,
-        report: { ...getConfirmParam, ...getConfirmResult },
-        viewConfirm: true
+        report: { ...getConfirmParam, ...getConfirmResult }
       })
       .silentRun(1);
   });
@@ -271,6 +272,35 @@ describe('user saga', () => {
         error: 'err',
         err: true
       })
+      .silentRun(1);
+  });
+
+  it('should get fw list succeeded', async () => {
+    const testData = [
+      { lang: 'test', fw: 'test2' },
+      { lang: 'test3', fw: 'test4' }
+    ];
+    handlerMock.mockReturnValue(() => testData);
+    return expectSaga(watchGetFwList, handlerMock)
+      .dispatch(getFwList.start('test'))
+      .put(getFwList.succeed(testData))
+      .withReducer(reportReducer)
+      .hasFinalState({
+        ...initialState,
+        fw: testData
+      })
+      .silentRun(1);
+  });
+
+  it('should get fw list 500 failed', async () => {
+    handlerMock.mockReturnValue(() => {
+      throw new Error('ただ込');
+    });
+    return expectSaga(watchGetFwList, handlerMock)
+      .dispatch(getFwList.start('test'))
+      .put(getFwList.fail('ただ込'))
+      .withReducer(reportReducer)
+      .hasFinalState({ ...initialState, error: 'ただ込', err: true })
       .silentRun(1);
   });
 });

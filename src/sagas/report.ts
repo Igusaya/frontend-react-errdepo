@@ -6,16 +6,20 @@ import {
   getConfirmReport,
   postReport,
   getReportDetail,
-  putReport
+  putReport,
+  getFwList
 } from 'actions/report';
 import {
   getLangFactory,
   getConfirmFactory,
   postReportFactory,
   getReportDetailFactory,
-  putReportFactory
+  putReportFactory,
+  getFwListFactory
 } from 'service/backend-django-rest-errdepo/api';
 
+/* Run function
+ ***********************************************/
 function* runGetLang(
   handler: typeof getLangFactory,
   action: ReturnType<typeof getLang.start>
@@ -101,6 +105,21 @@ function* runPutReport(
   }
 }
 
+function* runGetFwList(
+  handler: typeof getFwListFactory,
+  action: ReturnType<typeof getFwList.start>
+) {
+  try {
+    const api = handler();
+    const fwList = yield call(api, action.payload.param);
+    yield put(getFwList.succeed(fwList));
+  } catch (error) {
+    yield put(getFwList.fail(error.message));
+  }
+}
+
+/* Watch function
+ ***********************************************/
 export function* watchGetLang(handler: typeof getLangFactory) {
   yield takeLatest(ActionType.GET_LANG_START, runGetLang, handler);
 }
@@ -123,4 +142,8 @@ export function* watchGetReportDetail(handler: typeof getReportDetailFactory) {
 
 export function* watchPutReport(handler: typeof putReportFactory) {
   yield takeLatest(ActionType.PUT_REPORT_START, runPutReport, handler);
+}
+
+export function* watchGetFwList(handler: typeof getFwListFactory) {
+  yield takeLatest(ActionType.GET_FW_START, runGetFwList, handler);
 }

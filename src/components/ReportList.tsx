@@ -35,6 +35,17 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: theme.spacing(2),
       '& .MuiTextField-root': {
         marginTop: theme.spacing(2)
+      },
+      '& td.code': {
+        width: '100%'
+      },
+      '& pre': {
+        paddingTop: theme.spacing(1),
+        paddingLeft: theme.spacing(1),
+        paddingBottom: theme.spacing(1)
+      },
+      '& code': {
+        padding: '2px'
       }
     },
     margin: {

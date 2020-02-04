@@ -39,3 +39,8 @@ export interface ReportList {
   previous: string | null;
   results: Report[];
 }
+
+export interface FwSet {
+  lang: string;
+  fw: string;
+}

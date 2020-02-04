@@ -11,7 +11,8 @@ export enum ActionType {
   GET_PROFILE_FAIL = 'GET_PROFILE_FAIL',
   PUT_PROFILE_START = 'PUT_PROFILE_START',
   PUT_PROFILE_SUCCEED = 'PUT_PROFILE_SUCCEED',
-  PUT_PROFILE_FAIL = 'PUT_PROFILE_FAIL'
+  PUT_PROFILE_FAIL = 'PUT_PROFILE_FAIL',
+  ERASE_REPORT_DETAIL = 'ERASE_REPORT_DETAIL'
 }
 /* Interface
  ***********************************************/
@@ -29,6 +30,10 @@ export type UserElement = SignOutParams;
 
 /* Action
  ***********************************************/
+export const eraseReportDetail = () => ({
+  type: ActionType.ERASE_REPORT_DETAIL as typeof ActionType.ERASE_REPORT_DETAIL
+});
+
 export const signOut = {
   start: () => ({
     type: ActionType.SIGN_OUT_START as typeof ActionType.SIGN_OUT_START
@@ -89,4 +94,5 @@ export type UserMenuAction =
   | ReturnType<typeof getProfile.fail>
   | ReturnType<typeof putProfile.start>
   | ReturnType<typeof putProfile.succeed>
-  | ReturnType<typeof putProfile.fail>;
+  | ReturnType<typeof putProfile.fail>
+  | ReturnType<typeof eraseReportDetail>;
