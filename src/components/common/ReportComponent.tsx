@@ -133,6 +133,32 @@ export const Report: FC<ReportProps> = ({
   );
 };
 
+export const ReportOmitted: FC<ReportProps> = ({
+  lang,
+  fw,
+  errmsg,
+  descriptionHTML,
+  owner,
+  ownerImage,
+  modify
+}) => {
+  return (
+    <>
+      {lang ? (
+        <Chips
+          lang={lang}
+          fw={fw}
+          owner={owner}
+          ownerImage={ownerImage}
+          modify={modify}
+        />
+      ) : null}
+      {errmsg ? <Errmsg errmsg={errmsg} /> : null}
+      {descriptionHTML ? <InnerHTML html={descriptionHTML} /> : null}
+    </>
+  );
+};
+
 export const Errmsg: FC<{ errmsg: string }> = ({ errmsg }) => {
   const classes = useStyles();
   return (

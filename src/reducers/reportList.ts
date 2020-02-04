@@ -7,6 +7,7 @@ export interface State {
   reportList: ReportList;
   error?: string | null;
   err?: boolean | null;
+  isLoading: boolean;
 }
 
 export const initialState: State = {
@@ -15,7 +16,8 @@ export const initialState: State = {
     next: null,
     previous: null,
     results: []
-  }
+  },
+  isLoading: false
 };
 
 export type Action = viewReportListAction;
@@ -39,6 +41,32 @@ const reducer: Reducer<State, viewReportListAction> = (
     case ActionType.GET_REPORTS_FAIL:
       return {
         ...state,
+        error: action.payload.error,
+        err: action.err
+      };
+    case ActionType.GET_MORE_REPORTS_START:
+      return {
+        ...state,
+        isLoading: true
+      };
+    case ActionType.GET_MORE_REPORTS_SUCCEED:
+      return {
+        ...state,
+        isLoading: false,
+        reportList: {
+          ...state.reportList,
+          count: action.payload.result.count,
+          next: action.payload.result.next,
+          previous: action.payload.result.previous,
+          results: state.reportList.results.concat(
+            action.payload.result.results
+          )
+        }
+      };
+    case ActionType.GET_MORE_REPORTS_FAIL:
+      return {
+        ...state,
+        isLoading: false,
         error: action.payload.error,
         err: action.err
       };

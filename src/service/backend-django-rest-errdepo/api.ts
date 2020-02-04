@@ -379,7 +379,6 @@ export const putReportFactory = (optionConfig?: ApiConfig) => {
     }
   };
   const instance = axios.create(config);
-
   const putReport = async (report: {
     id: number;
     lang: string;
@@ -409,6 +408,10 @@ export const putReportFactory = (optionConfig?: ApiConfig) => {
   return putReport;
 };
 
+/**
+ * Post {baseURL}/fw/
+ * @param optionConfig
+ */
 export const getFwListFactory = (optionConfig?: ApiConfig) => {
   const config = {
     ...DEFAULT_API_CONFIG,
@@ -428,4 +431,32 @@ export const getFwListFactory = (optionConfig?: ApiConfig) => {
     }
   };
   return getFwList;
+};
+
+export const getMoreReportsFactory = (optionConfig?: ApiConfig) => {
+  const config = {
+    ...DEFAULT_API_CONFIG,
+    ...optionConfig
+  };
+  const instance = axios.create(config);
+
+  const getMoreReports = async (url: string) => {
+    const splitUrl = url.split('?');
+    try {
+      const response = await instance.get('report/?' + splitUrl[1]);
+      let responseData: ReportList = response.data;
+      const results = responseData.results.map((report: Report) => {
+        return { ...report, modify: normalizationTime(report.modify) };
+      });
+
+      responseData.results = results;
+      return responseData;
+    } catch (error) {
+      throw new Error(
+        'ただいま混み合っております。時間をおいて再度お試しください。 API status: ' +
+          error.response.status
+      );
+    }
+  };
+  return getMoreReports;
 };

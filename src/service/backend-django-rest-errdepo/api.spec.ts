@@ -13,7 +13,8 @@ import {
   getReportListFactory,
   getReportDetailFactory,
   putReportFactory,
-  getFwListFactory
+  getFwListFactory,
+  getMoreReportsFactory
 } from 'service/backend-django-rest-errdepo/api';
 import { getLang } from 'actions/report';
 import { indigo } from '@material-ui/core/colors';
@@ -535,6 +536,105 @@ describe('backend-django-rest-errdepo API handlers', () => {
       try {
         const getFwList = getFwListFactory();
         await getFwList('Java');
+      } catch (error) {
+        expect(error.message).toBe(
+          'ただいま混み合っております。時間をおいて再度お試しください。 API status: 500'
+        );
+      }
+    });
+  });
+
+  /* Get MoreReports test
+   ***********************************************/
+  describe('Getting moreReports', () => {
+    it('should succeed', async () => {
+      const resultData = {
+        count: 40,
+        next: 'http://localhost:8000/report/?page=3',
+        previous: 'http://localhost:8000/report/?page=1',
+        results: [
+          {
+            id: 28,
+            created: '2020-01-31T11:31:51.204710+09:00',
+            modify: '2020-01-31T11:31:51.204710+09:00',
+            lang: 'Python',
+            fw: 'Django-Rest',
+            env: 'os: mac\nversion: \nlibrary: \netc...',
+            errmsg: 'testerr1',
+            description: 'testdes1',
+            correspondence: 'testcor1',
+            descriptionHTML: '<p>testdes1</p>',
+            correspondenceHTML: '<p>testcor1</p>',
+            owner_id: 26,
+            owner: 'たなか'
+          },
+          {
+            id: 27,
+            created: '2020-01-31T11:31:50.724874+09:00',
+            modify: '2020-01-31T11:31:50.724874+09:00',
+            lang: 'Java',
+            fw: 'EE7',
+            env: 'os: windows\nversion: \nlibrary: \netc...',
+            errmsg: 'testerr2',
+            description: 'testdes2',
+            correspondence: 'testcor2',
+            descriptionHTML: '<p>testdes2</p>',
+            correspondenceHTML: '<p>testcor2</p>',
+            owner_id: 27,
+            owner: 'すずき'
+          }
+        ]
+      };
+      const expectResultData = {
+        count: 40,
+        next: 'http://localhost:8000/report/?page=3',
+        previous: 'http://localhost:8000/report/?page=1',
+        results: [
+          {
+            id: 28,
+            created: '2020-01-31T11:31:51.204710+09:00',
+            modify: '2020-01-31 11:31:51',
+            lang: 'Python',
+            fw: 'Django-Rest',
+            env: 'os: mac\nversion: \nlibrary: \netc...',
+            errmsg: 'testerr1',
+            description: 'testdes1',
+            correspondence: 'testcor1',
+            descriptionHTML: '<p>testdes1</p>',
+            correspondenceHTML: '<p>testcor1</p>',
+            owner_id: 26,
+            owner: 'たなか'
+          },
+          {
+            id: 27,
+            created: '2020-01-31T11:31:50.724874+09:00',
+            modify: '2020-01-31 11:31:50',
+            lang: 'Java',
+            fw: 'EE7',
+            env: 'os: windows\nversion: \nlibrary: \netc...',
+            errmsg: 'testerr2',
+            description: 'testdes2',
+            correspondence: 'testcor2',
+            descriptionHTML: '<p>testdes2</p>',
+            correspondenceHTML: '<p>testcor2</p>',
+            owner_id: 27,
+            owner: 'すずき'
+          }
+        ]
+      };
+      mock.onGet('report/?page=2').reply(200, resultData);
+
+      const getMoreReports = getMoreReportsFactory();
+      const result = await getMoreReports(
+        'http://localhost:8000/report/?page=2'
+      );
+      expect(result).toEqual(expectResultData);
+    });
+    it('should fail with 500', async () => {
+      mock.onGet('report/?page=2').reply(500);
+      try {
+        const getMoreReports = getMoreReportsFactory();
+        await getMoreReports('http://localhost:8000/report/?page=2');
       } catch (error) {
         expect(error.message).toBe(
           'ただいま混み合っております。時間をおいて再度お試しください。 API status: 500'

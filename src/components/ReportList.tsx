@@ -1,11 +1,11 @@
 import React, { FC, useEffect } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { Grid, Paper, Fab } from '@material-ui/core';
+import { Fab, Card, CardContent, CircularProgress } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Link } from 'react-router-dom';
 
 import { Report } from 'service/backend-django-rest-errdepo/model';
-import { Errmsg, Chips, InnerHTML } from 'components/common/ReportComponent';
+import { ReportOmitted } from 'components/common/ReportComponent';
 
 /* Styles
  ***********************************************/
@@ -14,27 +14,27 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       width: '100%'
     },
-    heading: {
-      fontSize: theme.typography.pxToRem(15),
-      fontWeight: theme.typography.fontWeightRegular
+    margin: {
+      margin: theme.spacing(1)
     },
-    panel: {
-      marginTop: theme.spacing(1)
+    extendedIcon: {
+      marginRight: theme.spacing(1)
     },
-    pre_line_field: {
-      whiteSpace: 'pre-line'
+    center_button_area: {
+      display: 'flex',
+      justifyContent: 'center',
+      marginTop: theme.spacing(2)
     },
-    tg_errmsg: {
-      backgroundColor: '#002b36',
-      color: '#b2c3c5',
-      padding: theme.spacing(1),
-      fontSize: '0.8rem'
-    },
-    paper: {
-      padding: theme.spacing(2),
-      margin: theme.spacing(2),
-      '& .MuiTextField-root': {
-        marginTop: theme.spacing(2)
+    conf_card: {
+      margin: theme.spacing(1),
+      marginBottom: theme.spacing(3),
+      '& h6.MuiTypography-root': {
+        padding: '0.1em 0.2em',
+        color: '#494949',
+        background: '#f4f4f4',
+        borderLeft: 'solid 5px #7EC2C2',
+        borderBottom: 'solid 3px #d7d7d7',
+        fontSize: '1rem'
       },
       '& td.code': {
         width: '100%'
@@ -48,14 +48,17 @@ const useStyles = makeStyles((theme: Theme) =>
         padding: '2px'
       }
     },
-    margin: {
-      margin: theme.spacing(1)
+    card_content: {
+      paddingTop: theme.spacing(2),
+      paddingRight: theme.spacing(2),
+      paddingleft: theme.spacing(2),
+      paddingBottom: theme.spacing(0)
     },
-    extendedIcon: {
-      marginRight: theme.spacing(1)
-    },
-    center_button_area: {
+    progressDiv: {
       display: 'flex',
+      '& > * + *': {
+        marginLeft: theme.spacing(2)
+      },
       justifyContent: 'center'
     }
   })
@@ -64,11 +67,20 @@ const useStyles = makeStyles((theme: Theme) =>
  ***********************************************/
 export interface ReportListProps {
   getReports: () => void;
+  getMoreReports: (url: string) => void;
   reports?: Report[];
+  isLoading: boolean;
+  nextUrl: string;
 }
 /* Function component
  ***********************************************/
-const ReportList: FC<ReportListProps> = ({ getReports, reports }) => {
+const ReportList: FC<ReportListProps> = ({
+  getReports,
+  getMoreReports,
+  isLoading,
+  reports,
+  nextUrl
+}) => {
   useEffect(() => {
     // スクロール位置調整
     window.scroll(0, 0);
@@ -76,46 +88,64 @@ const ReportList: FC<ReportListProps> = ({ getReports, reports }) => {
     // レポートリストの取得
     getReports();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (nextUrl) {
+      window.addEventListener('scroll', handleScroll, true);
+      return () => {
+        window.removeEventListener('scroll', handleScroll, true);
+      };
+    }
+  }, [nextUrl, isLoading]); // eslint-disable-line react-hooks/exhaustive-deps
   const classes = useStyles();
+
+  const handleScroll = () => {
+    if (
+      window.pageYOffset >=
+        (window.document.body.scrollHeight - window.innerHeight) * 0.9 &&
+      !isLoading
+    ) {
+      getMoreReports(nextUrl);
+    }
+  };
+
   return (
     <>
       <div className={classes.root}>
         {reports?.map(report => (
-          <Paper key={report.id} className={classes.paper}>
-            <Grid container direction="column">
-              <Grid item>
-                <Chips
-                  lang={report.lang}
-                  fw={report.fw}
-                  owner={report.owner}
-                  modify={report.modify}
-                />
-              </Grid>
-              <Grid item>
-                <Errmsg errmsg={report.errmsg} />
-              </Grid>
-              <Grid item>
-                <InnerHTML html={report.descriptionHTML} />
-              </Grid>
-              <Grid item>
-                <div className={classes.center_button_area}>
-                  <Fab
-                    variant="extended"
-                    size="small"
-                    color="primary"
-                    aria-label="detail"
-                    className={classes.margin}
-                    component={Link}
-                    to={'/report/' + report.id}
-                  >
-                    <ExpandMoreIcon className={classes.extendedIcon} />
-                    詳細
-                  </Fab>
-                </div>
-              </Grid>
-            </Grid>
-          </Paper>
+          <Card className={classes.conf_card} key={report.id}>
+            <CardContent className={classes.card_content}>
+              <ReportOmitted
+                lang={report.lang}
+                fw={report.fw}
+                errmsg={report.errmsg}
+                descriptionHTML={report.descriptionHTML}
+                owner={report.owner}
+                modify={report.modify}
+              />
+            </CardContent>
+            <div className={classes.center_button_area}>
+              <Fab
+                variant="extended"
+                size="small"
+                color="primary"
+                aria-label="detail"
+                className={classes.margin}
+                component={Link}
+                to={'/report/' + report.id}
+              >
+                <ExpandMoreIcon className={classes.extendedIcon} />
+                詳細
+              </Fab>
+            </div>
+            <CircularProgress variant="determinate" color="secondary" />
+          </Card>
         ))}
+        {isLoading ? (
+          <div className={classes.progressDiv}>
+            <CircularProgress color="secondary" />
+          </div>
+        ) : null}
       </div>
     </>
   );
