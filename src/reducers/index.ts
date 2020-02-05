@@ -73,6 +73,22 @@ const crossSliceReducer: Reducer<State, Action> = (
           }
         }
       };
+    case ReportActionType.PUT_REPORT_SUCCEED:
+      return {
+        ...state,
+        reportList: {
+          ...state.reportList,
+          reportList: {
+            ...state.reportList.reportList,
+            results: state.reportList.reportList.results.map(report => {
+              if (action.payload.result.id === report.id) {
+                return action.payload.result;
+              }
+              return report;
+            })
+          }
+        }
+      };
     default:
       return state;
   }

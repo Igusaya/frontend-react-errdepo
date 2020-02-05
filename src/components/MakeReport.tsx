@@ -88,6 +88,12 @@ const MakeReport: FC<InjectedFormikProps<
 
     // 言語セレクトオプション取得
     props.getLang();
+
+    // fw init
+    if (props.values.inputLang.length > 0) {
+      setDisableFw(false);
+      props.getFw(props.values.inputLang);
+    }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const langAutocompleteProps = {
@@ -229,6 +235,7 @@ const MakeReport: FC<InjectedFormikProps<
             data-testid="inputEnv"
             value={props.values.inputEnv}
             onChange={props.handleChange}
+            onBlur={props.handleBlur}
           />
           <TextField
             id="inputErrmsg"
