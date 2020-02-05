@@ -86,7 +86,9 @@ const ReportList: FC<ReportListProps> = ({
     window.scroll(0, 0);
 
     // レポートリストの取得
-    getReports();
+    if (reports === undefined || reports?.length === 0) {
+      getReports();
+    }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {

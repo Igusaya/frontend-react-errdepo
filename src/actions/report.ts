@@ -21,7 +21,10 @@ export enum ActionType {
   POST_REPORT_FAIL = 'POST_REPORT_FAIL',
   PUT_REPORT_START = 'PUT_REPORT_START',
   PUT_REPORT_SUCCEED = 'PUT_REPORT_SUCCEED',
-  PUT_REPORT_FAIL = 'PUT_REPORT_FAIL'
+  PUT_REPORT_FAIL = 'PUT_REPORT_FAIL',
+  DELETE_REPORT_START = 'DELETE_REPORT_START',
+  DELETE_REPORT_SUCCEED = 'DELETE_REPORT_SUCCEED',
+  DELETE_REPORT_FAIL = 'DELETE_REPORT_FAIL'
 }
 
 /* Interface
@@ -158,6 +161,24 @@ export const putReport = {
   })
 };
 
+export const deleteReport = {
+  start: (id: number) => ({
+    type: ActionType.DELETE_REPORT_START as typeof ActionType.DELETE_REPORT_START,
+    payload: { id }
+  }),
+
+  succeed: (id: number) => ({
+    type: ActionType.DELETE_REPORT_SUCCEED as typeof ActionType.DELETE_REPORT_SUCCEED,
+    payload: { id }
+  }),
+
+  fail: (error: string) => ({
+    type: ActionType.DELETE_REPORT_FAIL as typeof ActionType.DELETE_REPORT_FAIL,
+    payload: { error },
+    err: true
+  })
+};
+
 export type reportAction =
   | ReturnType<typeof getReportDetail.start>
   | ReturnType<typeof getReportDetail.succeed>
@@ -177,4 +198,7 @@ export type reportAction =
   | ReturnType<typeof postReport.fail>
   | ReturnType<typeof putReport.start>
   | ReturnType<typeof putReport.succeed>
-  | ReturnType<typeof putReport.fail>;
+  | ReturnType<typeof putReport.fail>
+  | ReturnType<typeof deleteReport.start>
+  | ReturnType<typeof deleteReport.succeed>
+  | ReturnType<typeof deleteReport.fail>;

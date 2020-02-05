@@ -460,3 +460,32 @@ export const getMoreReportsFactory = (optionConfig?: ApiConfig) => {
   };
   return getMoreReports;
 };
+
+/**
+ * Delete {baseURL}/report/{reportId}
+ * @param optionConfig
+ */
+export const deleteReportFactory = (optionConfig?: ApiConfig) => {
+  const token = localStorage.getItem('todolistsbackendkey');
+  const config = {
+    ...DEFAULT_API_CONFIG,
+    ...optionConfig,
+    headers: {
+      Authorization: 'Token ' + token
+    }
+  };
+
+  const instance = axios.create(config);
+
+  const deleteReport = async (id: number) => {
+    try {
+      await instance.delete(`report/${id}/`);
+    } catch (error) {
+      throw new Error(
+        'ただいま混み合っております。時間をおいて再度お試しください。 API status: ' +
+          error.response.status
+      );
+    }
+  };
+  return deleteReport;
+};

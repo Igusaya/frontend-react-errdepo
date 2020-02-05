@@ -3,11 +3,16 @@ import { Dispatch } from 'redux';
 
 import ReportDetail from 'components/ReportDetail';
 import { State } from 'reducers';
-import { selectReportDetail, getReportDetail } from 'actions/report';
+import {
+  selectReportDetail,
+  getReportDetail,
+  deleteReport
+} from 'actions/report';
 
 interface DispatchProps {
   selectReport: (id: number) => void;
   getReport: (id: number) => void;
+  deleteReport: (id: number) => void;
 }
 
 const mapStateToProps = (state: State) => {
@@ -49,7 +54,8 @@ const mapStateToProps = (state: State) => {
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
   return {
     selectReport: id => dispatch(selectReportDetail(id)),
-    getReport: id => dispatch(getReportDetail.start(id))
+    getReport: id => dispatch(getReportDetail.start(id)),
+    deleteReport: id => dispatch(deleteReport.start(id))
   };
 };
 

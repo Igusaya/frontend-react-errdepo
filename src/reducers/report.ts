@@ -168,6 +168,24 @@ const reportReducer: Reducer<State, reportAction> = (
         error: action.payload.error,
         err: action.err
       };
+    /* Delete report
+     ***********************************************/
+    case ActionType.DELETE_REPORT_START:
+      return {
+        ...state
+      };
+    case ActionType.DELETE_REPORT_SUCCEED:
+      return {
+        ...state,
+        reportId: undefined,
+        report: undefined
+      };
+    case ActionType.DELETE_REPORT_FAIL:
+      return {
+        ...state,
+        error: action.payload.error,
+        err: action.err
+      };
     default:
       return state;
   }

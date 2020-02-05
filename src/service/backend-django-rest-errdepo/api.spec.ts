@@ -14,10 +14,9 @@ import {
   getReportDetailFactory,
   putReportFactory,
   getFwListFactory,
-  getMoreReportsFactory
+  getMoreReportsFactory,
+  deleteReportFactory
 } from 'service/backend-django-rest-errdepo/api';
-import { getLang } from 'actions/report';
-import { indigo } from '@material-ui/core/colors';
 
 /* Local storage set up
  ***********************************************/
@@ -635,6 +634,27 @@ describe('backend-django-rest-errdepo API handlers', () => {
       try {
         const getMoreReports = getMoreReportsFactory();
         await getMoreReports('http://localhost:8000/report/?page=2');
+      } catch (error) {
+        expect(error.message).toBe(
+          'ただいま混み合っております。時間をおいて再度お試しください。 API status: 500'
+        );
+      }
+    });
+  });
+
+  /* Delete Report test
+   ***********************************************/
+  describe('Delete', () => {
+    it('should succeed', async () => {
+      mock.onDelete('report/1/').reply(200);
+      const deleteReport = deleteReportFactory();
+      await deleteReport(1);
+    });
+    it('should fail with 500', async () => {
+      mock.onDelete('report/1/').reply(500);
+      try {
+        const deleteReport = deleteReportFactory();
+        await deleteReport(1);
       } catch (error) {
         expect(error.message).toBe(
           'ただいま混み合っております。時間をおいて再度お試しください。 API status: 500'

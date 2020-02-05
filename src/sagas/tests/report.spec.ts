@@ -6,7 +6,8 @@ import {
   watchGetConfirm,
   watchGetReportDetail,
   watchPutReport,
-  watchGetFwList
+  watchGetFwList,
+  watchDeleteReport
 } from '../report';
 import reportReducer, { initialState } from '../../reducers/report';
 import {
@@ -15,7 +16,8 @@ import {
   getConfirmReport,
   getReportDetail,
   putReport,
-  getFwList
+  getFwList,
+  deleteReport
 } from '../../actions/report';
 
 /* Test
@@ -299,6 +301,31 @@ describe('report saga', () => {
     return expectSaga(watchGetFwList, handlerMock)
       .dispatch(getFwList.start('test'))
       .put(getFwList.fail('ただ込'))
+      .withReducer(reportReducer)
+      .hasFinalState({ ...initialState, error: 'ただ込', err: true })
+      .silentRun(1);
+  });
+
+  it('should delete report succeeded', async () => {
+    handlerMock.mockReturnValue(() => {});
+    return expectSaga(watchDeleteReport, handlerMock)
+      .dispatch(deleteReport.start(1))
+      .put(deleteReport.succeed(1))
+      .withReducer(reportReducer)
+      .hasFinalState({
+        ...initialState,
+        reportId: undefined,
+        report: undefined
+      })
+      .silentRun(1);
+  });
+
+  it('should delete report 500 failed', async () => {
+    handlerMock.mockReturnValue(() => {
+      throw new Error('ただ込');
+    });
+    return expectSaga(watchDeleteReport, handlerMock)
+      .dispatch(deleteReport.start(1))
       .withReducer(reportReducer)
       .hasFinalState({ ...initialState, error: 'ただ込', err: true })
       .silentRun(1);

@@ -7,7 +7,8 @@ import {
   postReport,
   getReportDetail,
   putReport,
-  getFwList
+  getFwList,
+  deleteReport
 } from 'actions/report';
 import {
   getLangFactory,
@@ -15,7 +16,8 @@ import {
   postReportFactory,
   getReportDetailFactory,
   putReportFactory,
-  getFwListFactory
+  getFwListFactory,
+  deleteReportFactory
 } from 'service/backend-django-rest-errdepo/api';
 
 /* Run function
@@ -118,6 +120,19 @@ function* runGetFwList(
   }
 }
 
+function* runDeleteReport(
+  handler: typeof deleteReportFactory,
+  action: ReturnType<typeof deleteReport.start>
+) {
+  try {
+    const api = handler();
+    yield call(api, action.payload.id);
+    yield put(deleteReport.succeed(action.payload.id));
+  } catch (error) {
+    yield put(deleteReport.fail(error.message));
+  }
+}
+
 /* Watch function
  ***********************************************/
 export function* watchGetLang(handler: typeof getLangFactory) {
@@ -146,4 +161,8 @@ export function* watchPutReport(handler: typeof putReportFactory) {
 
 export function* watchGetFwList(handler: typeof getFwListFactory) {
   yield takeLatest(ActionType.GET_FW_START, runGetFwList, handler);
+}
+
+export function* watchDeleteReport(handler: typeof deleteReportFactory) {
+  yield takeLatest(ActionType.DELETE_REPORT_START, runDeleteReport, handler);
 }

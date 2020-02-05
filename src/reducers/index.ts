@@ -60,6 +60,19 @@ const crossSliceReducer: Reducer<State, Action> = (
           report: {}
         }
       };
+    case ReportActionType.DELETE_REPORT_SUCCEED:
+      return {
+        ...state,
+        reportList: {
+          ...state.reportList,
+          reportList: {
+            ...state.reportList.reportList,
+            results: state.reportList.reportList.results.filter(
+              report => report.id !== action.payload.id
+            )
+          }
+        }
+      };
     default:
       return state;
   }

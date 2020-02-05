@@ -9,7 +9,8 @@ import {
   watchPostReport,
   watchGetReportDetail,
   watchPutReport,
-  watchGetFwList
+  watchGetFwList,
+  watchDeleteReport
 } from 'sagas/report';
 import { watchGetReportList, watchGetMoreReports } from 'sagas/reportList';
 import * as api from 'service/backend-django-rest-errdepo/api';
@@ -28,6 +29,7 @@ export default function* rootSaga() {
     fork(watchGetReportDetail, api.getReportDetailFactory),
     fork(watchPutReport, api.putReportFactory),
     fork(watchGetFwList, api.getFwListFactory),
-    fork(watchGetMoreReports, api.getMoreReportsFactory)
+    fork(watchGetMoreReports, api.getMoreReportsFactory),
+    fork(watchDeleteReport, api.deleteReportFactory)
   ]);
 }
