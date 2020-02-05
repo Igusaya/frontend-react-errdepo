@@ -117,7 +117,10 @@ const MakeReport: FC<InjectedFormikProps<
   let isTouched =
     props.touched.inputLang ||
     props.touched.inputFw ||
-    props.touched.inputErrmsg
+    props.touched.inputErrmsg ||
+    props.touched.inputDescription ||
+    props.touched.inputCorrespondence ||
+    props.touched.inputEnv
       ? true
       : false;
 
@@ -264,6 +267,7 @@ const MakeReport: FC<InjectedFormikProps<
             data-testid="inputCorrespondence"
             value={props.values.inputCorrespondence}
             onChange={props.handleChange}
+            onBlur={props.handleBlur}
           />
           <Button
             variant="contained"
