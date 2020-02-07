@@ -21,7 +21,8 @@ export enum ActionType {
   GET_EXISTS_VALUES_FAIL = 'GET_EXISTS_VALUES_FAIL',
   GET_FW_LIST_START = 'GET_FW_LIST_START',
   GET_FW_LIST_SUCCEED = 'GET_FW_LIST_SUCCEED',
-  GET_FW_LIST_FAIL = 'GET_FW_LIST_FAIL'
+  GET_FW_LIST_FAIL = 'GET_FW_LIST_FAIL',
+  ERASE_FROM_FW_LIST = 'ERASE_FROM_FW_LIST'
 }
 /* Interface
  ***********************************************/
@@ -110,7 +111,7 @@ export const getExistsValues = {
     type: ActionType.GET_EXISTS_VALUES_START as typeof ActionType.GET_EXISTS_VALUES_START
   }),
 
-  succeed: (result: ExistsValueSet[]) => ({
+  succeed: (result: ExistsValueSet) => ({
     type: ActionType.GET_EXISTS_VALUES_SUCCEED as typeof ActionType.GET_EXISTS_VALUES_SUCCEED,
     payload: { result }
   }),
@@ -121,6 +122,12 @@ export const getExistsValues = {
     err: true
   })
 };
+
+export const eraseFromFwList = (lang: string) => ({
+  type: ActionType.ERASE_FROM_FW_LIST as typeof ActionType.ERASE_FROM_FW_LIST,
+  lang: lang
+});
+
 export type viewReportListAction =
   | ReturnType<typeof getReportList.start>
   | ReturnType<typeof getReportList.succeed>
@@ -136,4 +143,5 @@ export type viewReportListAction =
   | ReturnType<typeof getFwList.fail>
   | ReturnType<typeof getExistsValues.start>
   | ReturnType<typeof getExistsValues.succeed>
-  | ReturnType<typeof getExistsValues.fail>;
+  | ReturnType<typeof getExistsValues.fail>
+  | ReturnType<typeof eraseFromFwList>;

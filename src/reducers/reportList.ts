@@ -131,16 +131,24 @@ const reducer: Reducer<State, viewReportListAction> = (
         ...state
       };
     case ActionType.GET_EXISTS_VALUES_SUCCEED:
+      console.log(action);
       return {
         ...state,
-        langList: action.payload.result.map(val => val.lang),
-        createrList: action.payload.result.map(val => val.creater)
+        langList: action.payload.result.langList,
+        createrList: action.payload.result.createrList
       };
     case ActionType.GET_EXISTS_VALUES_FAIL:
       return {
         ...state,
         error: action.payload.error,
         err: action.err
+      };
+    /* Eraze from fw list
+     ***********************************************/
+    case ActionType.ERASE_FROM_FW_LIST:
+      return {
+        ...state,
+        fwList: state.fwList.filter(fwSet => action.lang !== fwSet.lang)
       };
 
     default:

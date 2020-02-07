@@ -8,7 +8,8 @@ import {
   searchReports,
   getExistsValues,
   getFwList,
-  SearchParam
+  SearchParam,
+  eraseFromFwList
 } from 'actions/reportList';
 
 const Formik = withFormik<SearchProps, SearchFormValue>({
@@ -34,6 +35,7 @@ interface DispatchProps {
   search: (param: SearchParam) => void;
   getExistsValues: () => void;
   getFw: (lang: string) => void;
+  eraseFw: (lang: string) => void;
 }
 
 const mapStateToProps = (state: State) => {
@@ -48,7 +50,8 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
   return {
     search: param => dispatch(searchReports.start(param)),
     getExistsValues: () => dispatch(getExistsValues.start()),
-    getFw: (lang: string) => dispatch(getFwList.start(lang))
+    getFw: (lang: string) => dispatch(getFwList.start(lang)),
+    eraseFw: (lang: string) => dispatch(eraseFromFwList(lang))
   };
 };
 
@@ -60,6 +63,7 @@ const splitSearchWord = (word: string) => {
   }
   wqWordList.map(wqWord => {
     word = word.replace(wqWord, '');
+    return word;
   });
   // 全角空白を半角空白に置換
   word = word.replace('　', ' ');

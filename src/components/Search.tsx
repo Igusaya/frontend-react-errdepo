@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { InjectedFormikProps } from 'formik';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Card, TextField, Fab, Divider } from '@material-ui/core';
@@ -39,6 +39,7 @@ export interface SearchProps {
   }) => void;
   getExistsValues: () => void;
   getFw: (lang: string) => void;
+  eraseFw: (lang: string) => void;
   langList: string[];
   fwList: FwSet[];
   createrList: string[];
@@ -55,16 +56,56 @@ export interface SearchFormValue {
  ***********************************************/
 const Search: FC<InjectedFormikProps<SearchProps, SearchFormValue>> = props => {
   const classes = useStyles();
+  const [fwListState, setFwListState] = useState(props.fwList);
 
+  /* Use Effect
+   ***********************************************/
   useEffect(() => {
     if (props.langList.length === 0 && props.createrList.length === 0) {
       props.getExistsValues();
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const langList: string[] = ['Java', 'Typescriopt', 'C'];
-  const fwList: string[] = ['Java', 'Typescriopt', 'C'];
-  const createrList: string[] = ['Java', 'Typescriopt', 'C'];
+  useEffect(() => {
+    setFwListState(props.fwList);
+  }, [props.fwList]);
+
+  /* Select list
+   ***********************************************/
+  const langList: string[] = props.langList;
+  const fwList: string[] = fwListState.map(val => val.fw);
+  const createrList: string[] = props.createrList;
+
+  /* Handler
+   ***********************************************/
+  const handleFwListOpelation = (value: string[]) => {
+    if (fwListState.length === 0) {
+      let lang = value[0];
+      props.getFw(lang);
+      return;
+    }
+    const langHoziList = fwListState.map(fwSet => {
+      return fwSet.lang;
+    });
+    value.forEach(lang => {
+      if (!langHoziList.includes(lang)) {
+        props.getFw(lang);
+        return;
+      }
+    });
+    setFwListState(
+      fwListState.filter(fwSet => {
+        if (value.includes(fwSet.lang)) {
+          return true;
+        }
+        props.eraseFw(fwSet.lang);
+        return false;
+      })
+    );
+  };
+
+  /* Rturn
+   ***********************************************/
   return (
     <>
       <Card className={classes.card}>
@@ -100,6 +141,7 @@ const Search: FC<InjectedFormikProps<SearchProps, SearchFormValue>> = props => {
             noOptionsText="お探しの言語の記事はありません"
             onChange={(event, value) => {
               props.setFieldValue('inputLang', value);
+              handleFwListOpelation(value);
             }}
             renderInput={params => (
               <TextField

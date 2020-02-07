@@ -1,5 +1,11 @@
 import axios from 'axios';
-import { Profile, PutProfile, Report, ReportList } from './model';
+import {
+  Profile,
+  PutProfile,
+  Report,
+  ReportList,
+  ExistsValueSet
+} from './model';
 
 import {
   signUpMessageToJp,
@@ -488,4 +494,27 @@ export const deleteReportFactory = (optionConfig?: ApiConfig) => {
     }
   };
   return deleteReport;
+};
+
+export const getExistsValuesFactory = (optionConfig?: ApiConfig) => {
+  const config = {
+    ...DEFAULT_API_CONFIG,
+    ...optionConfig
+  };
+
+  const instance = axios.create(config);
+
+  const getExistsValues = async () => {
+    try {
+      const response = await instance.get('exists_values/');
+      const result: ExistsValueSet = response.data;
+      return result;
+    } catch (error) {
+      throw new Error(
+        'ただいま混み合っております。時間をおいて再度お試しください。 API status: ' +
+          error.response.status
+      );
+    }
+  };
+  return getExistsValues;
 };
