@@ -89,6 +89,19 @@ const crossSliceReducer: Reducer<State, Action> = (
           }
         }
       };
+    case ReportActionType.POST_REPORT_SUCCEED:
+      return {
+        ...state,
+        reportList: {
+          ...state.reportList,
+          reportList: {
+            ...state.reportList.reportList,
+            results: [action.payload.result].concat(
+              state.reportList.reportList.results
+            )
+          }
+        }
+      };
     default:
       return state;
   }
