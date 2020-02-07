@@ -1,13 +1,17 @@
 import { Reducer } from 'redux';
 
 import { ActionType, viewReportListAction } from 'actions/reportList';
-import { ReportList } from 'service/backend-django-rest-errdepo/model';
+import { ReportList, FwSet } from 'service/backend-django-rest-errdepo/model';
 
 export interface State {
   reportList: ReportList;
   error?: string | null;
   err?: boolean | null;
   isLoading: boolean;
+  isShowingSearchResults: boolean;
+  langList: string[];
+  createrList: string[];
+  fwList: FwSet[];
 }
 
 export const initialState: State = {
@@ -17,7 +21,11 @@ export const initialState: State = {
     previous: null,
     results: []
   },
-  isLoading: false
+  isLoading: false,
+  isShowingSearchResults: false,
+  langList: [],
+  createrList: [],
+  fwList: []
 };
 
 export type Action = viewReportListAction;
@@ -29,6 +37,8 @@ const reducer: Reducer<State, viewReportListAction> = (
   action: viewReportListAction
 ): State => {
   switch (action.type) {
+    /* Get reports
+     ***********************************************/
     case ActionType.GET_REPORTS_START:
       return {
         ...state
@@ -36,7 +46,8 @@ const reducer: Reducer<State, viewReportListAction> = (
     case ActionType.GET_REPORTS_SUCCEED:
       return {
         ...state,
-        reportList: action.payload.result
+        reportList: action.payload.result,
+        isShowingSearchResults: false
       };
     case ActionType.GET_REPORTS_FAIL:
       return {
@@ -44,6 +55,8 @@ const reducer: Reducer<State, viewReportListAction> = (
         error: action.payload.error,
         err: action.err
       };
+    /* Get more reports
+     ***********************************************/
     case ActionType.GET_MORE_REPORTS_START:
       return {
         ...state,
@@ -70,6 +83,66 @@ const reducer: Reducer<State, viewReportListAction> = (
         error: action.payload.error,
         err: action.err
       };
+    /* Search reports
+     ***********************************************/
+    case ActionType.SEARCH_REPORTS_START:
+      return {
+        ...state,
+        reportList: {
+          count: 0,
+          next: null,
+          previous: null,
+          results: []
+        }
+      };
+    case ActionType.SEARCH_REPORTS_SUCCEED:
+      return {
+        ...state,
+        reportList: action.payload.result,
+        isShowingSearchResults: true
+      };
+    case ActionType.SEARCH_REPORTS_FAIL:
+      return {
+        ...state,
+        error: action.payload.error,
+        err: action.err
+      };
+    /* Get fw list
+     ***********************************************/
+    case ActionType.GET_FW_LIST_START:
+      return {
+        ...state
+      };
+    case ActionType.GET_FW_LIST_SUCCEED:
+      return {
+        ...state,
+        fwList: state.fwList.concat(action.payload.result)
+      };
+    case ActionType.GET_FW_LIST_FAIL:
+      return {
+        ...state,
+        error: action.payload.error,
+        err: action.err
+      };
+    /* Get exists valuse
+     ***********************************************/
+    case ActionType.GET_EXISTS_VALUES_START:
+      return {
+        ...state
+      };
+    case ActionType.GET_EXISTS_VALUES_SUCCEED:
+      return {
+        ...state,
+        langList: action.payload.result.map(val => val.lang),
+        createrList: action.payload.result.map(val => val.creater)
+      };
+    case ActionType.GET_EXISTS_VALUES_FAIL:
+      return {
+        ...state,
+        error: action.payload.error,
+        err: action.err
+      };
+
     default:
       return state;
   }

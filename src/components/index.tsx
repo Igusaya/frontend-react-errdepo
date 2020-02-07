@@ -53,7 +53,7 @@ const App: React.FC<AppProps> = ({
       margin: theme.spacing(0.8, 1.2)
     },
     heroContent: {
-      padding: theme.spacing(8, 0, 6)
+      padding: theme.spacing(4, 0, 6)
     },
     text: {
       whiteSpace: 'pre-line'
@@ -103,6 +103,9 @@ const App: React.FC<AppProps> = ({
           className={classes.heroContent}
         >
           <Switch>
+            <Route exact path="/">
+              <ViewReportList />
+            </Route>
             <Route path="/post_report">
               <MakeReport />
             </Route>
@@ -123,8 +126,8 @@ const App: React.FC<AppProps> = ({
             <Route path="/report/:reportId">
               <ReportDetail />
             </Route>
-            <Route path="/">
-              <ViewReportList />
+            <Route path="*">
+              <Redirect to={{ pathname: '/' }} />
             </Route>
           </Switch>
         </Container>

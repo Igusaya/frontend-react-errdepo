@@ -44,3 +44,8 @@ export interface FwSet {
   lang: string;
   fw: string;
 }
+
+export interface ExistsValueSet {
+  lang: string;
+  creater: string;
+}

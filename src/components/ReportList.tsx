@@ -1,11 +1,20 @@
 import React, { FC, useEffect } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { Fab, Card, CardContent, CircularProgress } from '@material-ui/core';
+import {
+  Fab,
+  Card,
+  CardContent,
+  CircularProgress,
+  Button,
+  Modal
+} from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import SearchIcon from '@material-ui/icons/Search';
 import { Link } from 'react-router-dom';
 
 import { Report } from 'service/backend-django-rest-errdepo/model';
 import { ReportOmitted } from 'components/common/ReportComponent';
+import Search from 'containers/Search';
 
 /* Styles
  ***********************************************/
@@ -60,6 +69,14 @@ const useStyles = makeStyles((theme: Theme) =>
         marginLeft: theme.spacing(2)
       },
       justifyContent: 'center'
+    },
+    button: {
+      margin: theme.spacing(0, 0, 1, 1)
+    },
+    modal: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
     }
   })
 );
@@ -81,6 +98,8 @@ const ReportList: FC<ReportListProps> = ({
   reports,
   nextUrl
 }) => {
+  const [modalOpen, setModalOpen] = React.useState(false);
+
   useEffect(() => {
     // スクロール位置調整
     window.scroll(0, 0);
@@ -111,9 +130,39 @@ const ReportList: FC<ReportListProps> = ({
     }
   };
 
+  const handleModalOpen = () => {
+    setModalOpen(true);
+  };
+  const handleModalClose = () => {
+    setModalOpen(false);
+  };
   return (
     <>
       <div className={classes.root}>
+        <Button
+          variant="contained"
+          color="primary"
+          className={classes.button}
+          startIcon={<SearchIcon />}
+          onClick={handleModalOpen}
+        >
+          検索
+        </Button>
+        {/* TODO: prppsで検索結果表示flgを受け取ってmodalを閉じる*/}
+        <Modal
+          aria-labelledby="delete-confirm"
+          aria-describedby="delete-description"
+          open={modalOpen}
+          onClose={handleModalClose}
+          className={classes.modal}
+        >
+          <div>
+            <Search />
+          </div>
+        </Modal>
+
+        {/* Out put report list
+         ***********************************************/}
         {reports?.map(report => (
           <Card className={classes.conf_card} key={report.id}>
             <CardContent className={classes.card_content}>
