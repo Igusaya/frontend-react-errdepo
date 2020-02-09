@@ -75,7 +75,7 @@ const App: React.FC<AppProps> = ({
         >
           <Toolbar className={classes.toolbar}>
             <div className={classes.toolbarTitle}>
-              <Link to="/">
+              <Link to="/report">
                 <img
                   src={`${process.env.PUBLIC_URL}/logo.png`}
                   alt="Logo"

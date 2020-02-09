@@ -14,11 +14,15 @@ import {
 
 const Formik = withFormik<SearchProps, SearchFormValue>({
   mapPropsToValues: props => {
+    const inputWord =
+      props.searchValue.words.length > 0 && props.searchValue.words[0] !== ''
+        ? '"' + props.searchValue.words.join('" "') + '"'
+        : '';
     return {
-      inputWord: '',
-      inputLang: [],
-      inputFw: [],
-      inputCreater: []
+      inputWord: inputWord,
+      inputLang: props.searchValue.langs,
+      inputFw: props.searchValue.fws,
+      inputCreater: props.searchValue.creaters
     };
   },
   handleSubmit: (payload, { props }) => {
@@ -42,7 +46,8 @@ const mapStateToProps = (state: State) => {
   return {
     langList: state.reportList.langList || [],
     fwList: state.reportList.fwList || [],
-    createrList: state.reportList.createrList || []
+    createrList: state.reportList.createrList || [],
+    searchValue: state.reportList.searchValue
   };
 };
 
@@ -56,25 +61,26 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
 };
 
 const splitSearchWord = (word: string) => {
-  // "で括られた文字列を切り出す
   const wqWordList = word.match(/"(\\.|[^"\\])*"/g);
-  if (wqWordList?.length === undefined || wqWordList?.length === 0) {
-    return null;
+  let noWqWordList: string[] = [];
+  if (wqWordList?.length !== undefined && wqWordList?.length > 0) {
+    // "で括られた文字列を切り出す
+    wqWordList.map(wqWord => {
+      word = word.replace(wqWord, '');
+      return word;
+    });
+    // wqWordListの要素から"を抜く
+    noWqWordList = wqWordList.map(wqWord => {
+      return wqWord.replace(/"/g, '');
+    });
   }
-  wqWordList.map(wqWord => {
-    word = word.replace(wqWord, '');
-    return word;
-  });
+
   // 全角空白を半角空白に置換
   word = word.replace('　', ' ');
   // 連続した半角空白を単一の半角空白に置換
   word = word.replace(/\s+/, ' ');
   // 半角空白でsplit
   const wordList = word.split(' ');
-  // wqWordListの要素から"を抜く
-  let noWqWordList = wqWordList.map(wqWord => {
-    return wqWord.replace(/"/g, '');
-  });
   // 配列を結合して返却
   return noWqWordList.concat(wordList);
 };

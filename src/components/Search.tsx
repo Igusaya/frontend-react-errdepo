@@ -43,6 +43,12 @@ export interface SearchProps {
   langList: string[];
   fwList: FwSet[];
   createrList: string[];
+  searchValue: {
+    words: string[];
+    langs: string[];
+    fws: string[];
+    creaters: string[];
+  };
 }
 
 export interface SearchFormValue {
@@ -139,6 +145,7 @@ const Search: FC<InjectedFormikProps<SearchProps, SearchFormValue>> = props => {
             options={langList}
             getOptionLabel={option => option}
             noOptionsText="お探しの言語の記事はありません"
+            value={props.values.inputLang}
             onChange={(event, value) => {
               props.setFieldValue('inputLang', value);
               handleFwListOpelation(value);
@@ -165,6 +172,7 @@ const Search: FC<InjectedFormikProps<SearchProps, SearchFormValue>> = props => {
             options={fwList}
             getOptionLabel={option => option}
             noOptionsText="お探しのFW・library等の記事はありません"
+            value={props.values.inputFw}
             onChange={(event, value) => props.setFieldValue('inputFw', value)}
             renderInput={params => (
               <TextField
@@ -188,6 +196,7 @@ const Search: FC<InjectedFormikProps<SearchProps, SearchFormValue>> = props => {
             options={createrList}
             getOptionLabel={option => option}
             noOptionsText="お探しの作成者はおりません"
+            value={props.values.inputCreater}
             onChange={(event, value) =>
               props.setFieldValue('inputCreater', value)
             }

@@ -5,13 +5,15 @@ import {
   ActionType,
   getMoreReports,
   getExistsValues,
-  getFwList
+  getFwList,
+  searchReports
 } from 'actions/reportList';
 import {
   getReportListFactory,
   getMoreReportsFactory,
   getExistsValuesFactory,
-  getFwListFactory
+  getFwListFactory,
+  getSearchRportsFactory
 } from 'service/backend-django-rest-errdepo/api';
 
 function* runGetReportList(
@@ -66,6 +68,19 @@ function* runGetFwList(
   }
 }
 
+function* runGetSearchReports(
+  handler: typeof getSearchRportsFactory,
+  action: ReturnType<typeof searchReports.start>
+) {
+  try {
+    const api = handler();
+    const reports = yield call(api, action.payload.param);
+    yield put(searchReports.succeed(reports));
+  } catch (error) {
+    yield put(searchReports.fail(error.message));
+  }
+}
+
 export function* watchGetReportList(handler: typeof getReportListFactory) {
   yield takeLatest(ActionType.GET_REPORTS_START, runGetReportList, handler);
 }
@@ -88,4 +103,12 @@ export function* watchGetExistsValues(handler: typeof getExistsValuesFactory) {
 
 export function* watchGetFwList(handler: typeof getFwListFactory) {
   yield takeLatest(ActionType.GET_FW_LIST_START, runGetFwList, handler);
+}
+
+export function* watchGetSearchReports(handler: typeof getSearchRportsFactory) {
+  yield takeLatest(
+    ActionType.SEARCH_REPORTS_START,
+    runGetSearchReports,
+    handler
+  );
 }

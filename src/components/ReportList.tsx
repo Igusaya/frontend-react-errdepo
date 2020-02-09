@@ -87,7 +87,9 @@ export interface ReportListProps {
   getMoreReports: (url: string) => void;
   reports?: Report[];
   isLoading: boolean;
+  isSearchLoading: boolean;
   nextUrl: string;
+  isShowingSearchResults: boolean;
 }
 /* Function component
  ***********************************************/
@@ -95,8 +97,10 @@ const ReportList: FC<ReportListProps> = ({
   getReports,
   getMoreReports,
   isLoading,
+  isSearchLoading,
   reports,
-  nextUrl
+  nextUrl,
+  isShowingSearchResults
 }) => {
   const [modalOpen, setModalOpen] = React.useState(false);
 
@@ -105,7 +109,11 @@ const ReportList: FC<ReportListProps> = ({
     window.scroll(0, 0);
 
     // レポートリストの取得
-    if (reports === undefined || reports?.length === 0) {
+    if (
+      reports === undefined ||
+      reports?.length === 0 ||
+      isShowingSearchResults
+    ) {
       getReports();
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -118,9 +126,18 @@ const ReportList: FC<ReportListProps> = ({
       };
     }
   }, [nextUrl, isLoading]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    setModalOpen(false);
+  }, [reports]);
+
   const classes = useStyles();
 
   const handleScroll = () => {
+    // TODO: 検索結果ではページネーション未実装のためスキップ
+    if (isShowingSearchResults) {
+      return;
+    }
     if (
       window.pageYOffset >=
         (window.document.body.scrollHeight - window.innerHeight) * 0.9 &&
@@ -136,6 +153,7 @@ const ReportList: FC<ReportListProps> = ({
   const handleModalClose = () => {
     setModalOpen(false);
   };
+
   return (
     <>
       <div className={classes.root}>
@@ -152,7 +170,7 @@ const ReportList: FC<ReportListProps> = ({
         <Modal
           aria-labelledby="delete-confirm"
           aria-describedby="delete-description"
-          open={modalOpen}
+          open={isSearchLoading ? !isSearchLoading : modalOpen}
           onClose={handleModalClose}
           className={classes.modal}
         >
@@ -192,7 +210,7 @@ const ReportList: FC<ReportListProps> = ({
             <CircularProgress variant="determinate" color="secondary" />
           </Card>
         ))}
-        {isLoading ? (
+        {isLoading || isSearchLoading ? (
           <div className={classes.progressDiv}>
             <CircularProgress color="secondary" />
           </div>

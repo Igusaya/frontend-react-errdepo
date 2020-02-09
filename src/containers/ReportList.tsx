@@ -14,7 +14,9 @@ const mapStateToProps = (state: State) => {
   return {
     reports: state.reportList.reportList.results,
     isLoading: state.reportList.isLoading,
-    nextUrl: state.reportList.reportList.next || ''
+    isSearchLoading: state.reportList.isSearchLoading,
+    nextUrl: state.reportList.reportList.next || '',
+    isShowingSearchResults: state.reportList.isShowingSearchResults
   };
 };
 

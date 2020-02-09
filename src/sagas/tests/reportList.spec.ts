@@ -1,8 +1,20 @@
 import { expectSaga } from 'redux-saga-test-plan';
 
 import reportListReducer, { initialState } from 'reducers/reportList';
-import { getReportList, getMoreReports } from 'actions/reportList';
-import { watchGetReportList, watchGetMoreReports } from 'sagas/reportList';
+import {
+  getReportList,
+  getMoreReports,
+  getExistsValues,
+  getFwList,
+  searchReports
+} from 'actions/reportList';
+import {
+  watchGetReportList,
+  watchGetMoreReports,
+  watchGetExistsValues,
+  watchGetFwList,
+  watchGetSearchReports
+} from 'sagas/reportList';
 
 /* Test
  ***********************************************/
@@ -109,6 +121,125 @@ describe('report list saga', () => {
       .put(getMoreReports.fail('ただ込'))
       .withReducer(reportListReducer)
       .hasFinalState({ ...initialState, error: 'ただ込', err: true })
+      .silentRun(1);
+  });
+
+  it('should get exists values succeeded', async () => {
+    handlerMock.mockReturnValue(() => ({
+      langList: ['lang1', 'lang2'],
+      createrList: ['user1', 'user2']
+    }));
+    return expectSaga(watchGetExistsValues, handlerMock)
+      .dispatch(getExistsValues.start())
+      .put(
+        getExistsValues.succeed({
+          langList: ['lang1', 'lang2'],
+          createrList: ['user1', 'user2']
+        })
+      )
+      .withReducer(reportListReducer)
+      .hasFinalState({
+        ...initialState,
+        langList: ['lang1', 'lang2'],
+        createrList: ['user1', 'user2']
+      })
+      .silentRun(1);
+  });
+
+  it('should get exists values 500 failed', async () => {
+    handlerMock.mockReturnValue(() => {
+      throw new Error('ただ込');
+    });
+    return expectSaga(watchGetExistsValues, handlerMock)
+      .dispatch(getExistsValues.start())
+      .put(getExistsValues.fail('ただ込'))
+      .withReducer(reportListReducer)
+      .hasFinalState({ ...initialState, error: 'ただ込', err: true })
+      .silentRun(1);
+  });
+
+  it('should get fw list succeeded', async () => {
+    const testData = [
+      { lang: 'test', fw: 'test2' },
+      { lang: 'test3', fw: 'test4' }
+    ];
+    handlerMock.mockReturnValue(() => testData);
+    return expectSaga(watchGetFwList, handlerMock)
+      .dispatch(getFwList.start('test'))
+      .put(getFwList.succeed(testData))
+      .withReducer(reportListReducer)
+      .hasFinalState({
+        ...initialState,
+        fwList: testData
+      })
+      .silentRun(1);
+  });
+
+  it('should get fw list 500 failed', async () => {
+    handlerMock.mockReturnValue(() => {
+      throw new Error('ただ込');
+    });
+    return expectSaga(watchGetFwList, handlerMock)
+      .dispatch(getFwList.start('test'))
+      .put(getFwList.fail('ただ込'))
+      .withReducer(reportListReducer)
+      .hasFinalState({ ...initialState, error: 'ただ込', err: true })
+      .silentRun(1);
+  });
+
+  it('should get search reports succeeded', async () => {
+    handlerMock.mockReturnValue(() => testData);
+    return expectSaga(watchGetSearchReports, handlerMock)
+      .dispatch(
+        searchReports.start({
+          inputWord: [],
+          inputLang: [],
+          inputFw: [],
+          inputCreater: ['test']
+        })
+      )
+      .put(searchReports.succeed(testData))
+      .withReducer(reportListReducer)
+      .hasFinalState({
+        ...initialState,
+        reportList: testData,
+        isShowingSearchResults: true,
+        searchValue: {
+          words: [],
+          langs: [],
+          fws: [],
+          creaters: ['test']
+        }
+      })
+      .silentRun(1);
+  });
+
+  it('should get search reports 500 failed', async () => {
+    handlerMock.mockReturnValue(() => {
+      throw new Error('ただ込');
+    });
+    return expectSaga(watchGetSearchReports, handlerMock)
+      .dispatch(
+        searchReports.start({
+          inputWord: [],
+          inputLang: [],
+          inputFw: [],
+          inputCreater: ['test']
+        })
+      )
+      .put(searchReports.fail('ただ込'))
+      .withReducer(reportListReducer)
+      .hasFinalState({
+        ...initialState,
+        error: 'ただ込',
+        err: true,
+        searchValue: {
+          words: [],
+          langs: [],
+          fws: [],
+          creaters: ['test']
+        }
+      })
       .silentRun(1);
   });
 });

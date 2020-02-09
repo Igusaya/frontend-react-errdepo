@@ -8,10 +8,17 @@ export interface State {
   error?: string | null;
   err?: boolean | null;
   isLoading: boolean;
+  isSearchLoading: boolean;
   isShowingSearchResults: boolean;
   langList: string[];
   createrList: string[];
   fwList: FwSet[];
+  searchValue: {
+    words: string[];
+    langs: string[];
+    fws: string[];
+    creaters: string[];
+  };
 }
 
 export const initialState: State = {
@@ -22,10 +29,17 @@ export const initialState: State = {
     results: []
   },
   isLoading: false,
+  isSearchLoading: false,
   isShowingSearchResults: false,
   langList: [],
   createrList: [],
-  fwList: []
+  fwList: [],
+  searchValue: {
+    words: [],
+    langs: [],
+    fws: [],
+    creaters: []
+  }
 };
 
 export type Action = viewReportListAction;
@@ -41,19 +55,22 @@ const reducer: Reducer<State, viewReportListAction> = (
      ***********************************************/
     case ActionType.GET_REPORTS_START:
       return {
-        ...state
+        ...state,
+        isLoading: true
       };
     case ActionType.GET_REPORTS_SUCCEED:
       return {
         ...state,
         reportList: action.payload.result,
-        isShowingSearchResults: false
+        isShowingSearchResults: false,
+        isLoading: false
       };
     case ActionType.GET_REPORTS_FAIL:
       return {
         ...state,
         error: action.payload.error,
-        err: action.err
+        err: action.err,
+        isLoading: false
       };
     /* Get more reports
      ***********************************************/
@@ -88,22 +105,31 @@ const reducer: Reducer<State, viewReportListAction> = (
     case ActionType.SEARCH_REPORTS_START:
       return {
         ...state,
+        isSearchLoading: true,
         reportList: {
           count: 0,
           next: null,
           previous: null,
           results: []
+        },
+        searchValue: {
+          words: action.payload.param.inputWord || [],
+          langs: action.payload.param.inputLang || [],
+          fws: action.payload.param.inputFw || [],
+          creaters: action.payload.param.inputCreater || []
         }
       };
     case ActionType.SEARCH_REPORTS_SUCCEED:
       return {
         ...state,
+        isSearchLoading: false,
         reportList: action.payload.result,
         isShowingSearchResults: true
       };
     case ActionType.SEARCH_REPORTS_FAIL:
       return {
         ...state,
+        isSearchLoading: false,
         error: action.payload.error,
         err: action.err
       };
@@ -131,7 +157,6 @@ const reducer: Reducer<State, viewReportListAction> = (
         ...state
       };
     case ActionType.GET_EXISTS_VALUES_SUCCEED:
-      console.log(action);
       return {
         ...state,
         langList: action.payload.result.langList,

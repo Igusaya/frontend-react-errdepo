@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 import {
   Profile,
   PutProfile,
@@ -6,12 +7,12 @@ import {
   ReportList,
   ExistsValueSet
 } from './model';
-
 import {
   signUpMessageToJp,
   signUpParamFactry,
   normalizationTime
 } from 'service/backend-django-rest-errdepo/util';
+import { SearchParam } from 'actions/reportList';
 
 /* Interface
  ***********************************************/
@@ -447,9 +448,9 @@ export const getMoreReportsFactory = (optionConfig?: ApiConfig) => {
   const instance = axios.create(config);
 
   const getMoreReports = async (url: string) => {
-    const splitUrl = url.split('?');
+    const splitUrl = url.split('/');
     try {
-      const response = await instance.get('report/?' + splitUrl[1]);
+      const response = await instance.get(splitUrl[3] + '/' + splitUrl[4]);
       let responseData: ReportList = response.data;
       const results = responseData.results.map((report: Report) => {
         return { ...report, modify: normalizationTime(report.modify) };
@@ -496,6 +497,10 @@ export const deleteReportFactory = (optionConfig?: ApiConfig) => {
   return deleteReport;
 };
 
+/**
+ * Get {baseURL}/exits_values/
+ * @param optionConfig
+ */
 export const getExistsValuesFactory = (optionConfig?: ApiConfig) => {
   const config = {
     ...DEFAULT_API_CONFIG,
@@ -517,4 +522,38 @@ export const getExistsValuesFactory = (optionConfig?: ApiConfig) => {
     }
   };
   return getExistsValues;
+};
+
+/**
+ * Post {baseURL}/search_reports/
+ * axios禁則文字がパラメーターにあるためPostで実装
+ * @param optionConfig
+ */
+export const getSearchRportsFactory = (optionConfig?: ApiConfig) => {
+  const config = {
+    ...DEFAULT_API_CONFIG,
+    ...optionConfig
+  };
+
+  const instance = axios.create(config);
+
+  const getSearchReports = async (param: SearchParam) => {
+    try {
+      const response = await instance.post('search_reports/', param);
+
+      let responseData: ReportList = response.data;
+      const results = responseData.results.map((report: Report) => {
+        return { ...report, modify: normalizationTime(report.modify) };
+      });
+
+      responseData.results = results;
+      return responseData;
+    } catch (error) {
+      throw new Error(
+        'ただいま混み合っております。時間をおいて再度お試しください。 API status: ' +
+          error.response.status
+      );
+    }
+  };
+  return getSearchReports;
 };
