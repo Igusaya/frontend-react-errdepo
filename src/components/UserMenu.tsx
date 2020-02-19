@@ -210,16 +210,6 @@ const UserMenu: FC<InjectedFormikProps<
     img.src = URL.createObjectURL(e.target.files[0]);
   };
 
-  // get profile image
-  let imageURL: string | undefined = undefined;
-  if (
-    process.env.REACT_APP_BACKEND_URL !== undefined &&
-    props.profile?.image !== undefined
-  ) {
-    imageURL =
-      process.env.REACT_APP_BACKEND_URL.slice(0, -1) + props.profile.image;
-  }
-
   useEffect(() => {
     setModalOpen(false);
     // eslint-disable-next-line
@@ -232,7 +222,9 @@ const UserMenu: FC<InjectedFormikProps<
     <>
       <Button
         onClick={handleClick}
-        startIcon={<Avatar alt={props.profile?.username} src={imageURL} />}
+        startIcon={
+          <Avatar alt={props.profile?.username} src={props.profile?.image} />
+        }
         data-testid="user-button"
       >
         <div>{props.profile?.username}</div>
@@ -309,7 +301,7 @@ const UserMenu: FC<InjectedFormikProps<
               </CardContent>
               <CardMedia
                 className={classes.media}
-                image={profImage ? profImage : imageURL}
+                image={profImage ? profImage : props.profile?.image}
                 title="profile"
                 id="inputTest"
               >
