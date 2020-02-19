@@ -24,7 +24,7 @@ const Formik = withFormik<MakeReportProps, MakeReportFormValue>({
     return {
       inputLang: props.lang || '',
       inputFw: props.fw || '',
-      inputEnv: props.errmsg || 'os: \nversion: \nlibrary: \netc...',
+      inputEnv: props.env || 'os: \nversion: \nlibrary: \netc...',
       inputErrmsg: props.errmsg || '',
       inputDescription: props.description || '',
       inputCorrespondence: props.correspondence || ''
